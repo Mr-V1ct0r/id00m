@@ -1,0 +1,79 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>ID00M flasher — frame codec self-test</title>
+<style>
+  body { font: 14px/1.5 system-ui, sans-serif; max-width: 820px; margin: 2rem auto; padding: 0 1rem; }
+  h1 { font-size: 1.2rem; }
+  .pass { color: #15803d; } .fail { color: #b91c1c; font-weight: 700; }
+  pre { background: #f4f4f5; padding: 12px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap; }
+  #summary { font-weight: 700; font-size: 1.05rem; margin: 12px 0; }
+</style>
+<h1>ID00M flasher — frame codec self-test</h1>
+<p>Pure-logic check of <code>crc16</code> / <code>encodeFrame</code> / <code>FrameDecoder</code> /
+<code>parseIntelHex</code> against frames captured from a real avrdude session. No module or hardware
+needed. <b>Serve over localhost</b> (ES-module import is blocked on <code>file://</code>):
+<code>python -m http.server</code> in <code>flasher/</code>, then open
+<code>http://localhost:8000/test/frame-test.html</code>.</p>
+<div id="summary">running…</div>
+<pre id="out"></pre>
+<script type="module">
+import { crc16, encodeFrame, FrameDecoder, parseIntelHex } from '../webserial-jtag2updi.js';
+
+const out = document.getElementById('out');
+let pass = 0, fail = 0;
+const hex = (a) => [...a].map((x) => x.toString(16).padStart(2, '0')).join(' ');
+const arr = (a) => Array.from(a);
+function test(name, cond, detail) {
+  const ok = !!cond; ok ? pass++ : fail++;
+  out.innerHTML += `<span class="${ok ? 'pass' : 'fail'}">${ok ? 'PASS' : 'FAIL'}</span>  ${name}` +
+    (ok || !detail ? '' : `\n        ${detail}`) + '\n';
+}
+
+// --- CRC vectors (data before the 2 CRC bytes -> expected CRC), captured from avrdude ---
+test('crc16 sign-on cmd == 0x97f3',
+  crc16([0x1b,0x00,0x00,0x01,0x00,0x00,0x00,0x0e,0x01]) === 0x97f3);
+test('crc16 sign-on response == 0x566f',
+  crc16([0x1b,0x00,0x00,0x1d,0x00,0x00,0x00,0x0e,0x86,0x01,0x01,0x07,0x01,0x01,0x01,0x07,0x06,0x01,
+         0x00,0x00,0x00,0x00,0x00,0x00,0x4a,0x54,0x41,0x47,0x49,0x43,0x45,0x20,0x6d,0x6b,0x49,0x49,0x00]) === 0x566f);
+test('crc16 getparam cmd == 0x3124',
+  crc16([0x1b,0x01,0x00,0x03,0x00,0x00,0x00,0x0e,0x02,0x03,0x06]) === 0x3124);
+
+// --- encodeFrame must reproduce captured frames byte-for-byte ---
+const encVecs = [
+  { seq: 0, body: [0x01],            exp: [0x1b,0x00,0x00,0x01,0x00,0x00,0x00,0x0e,0x01,0xf3,0x97] },
+  { seq: 1, body: [0x02,0x03,0x06],  exp: [0x1b,0x01,0x00,0x03,0x00,0x00,0x00,0x0e,0x02,0x03,0x06,0x24,0x31] },
+  { seq: 2, body: [0x0f],            exp: [0x1b,0x02,0x00,0x01,0x00,0x00,0x00,0x0e,0x0f,0xe2,0x75] },
+  { seq: 8, body: [0x0b,0x01],       exp: [0x1b,0x08,0x00,0x02,0x00,0x00,0x00,0x0e,0x0b,0x01,0xde,0xfe] },
+  { seq: 9, body: [0x14],            exp: [0x1b,0x09,0x00,0x01,0x00,0x00,0x00,0x0e,0x14,0xdc,0x7c] },
+];
+for (const v of encVecs) {
+  const got = arr(encodeFrame(v.seq, v.body));
+  test(`encodeFrame(seq=${v.seq}, [${v.body.map((b)=>'0x'+b.toString(16)).join(',')}])`,
+    hex(got) === hex(v.exp), `got  ${hex(got)}\n        want ${hex(v.exp)}`);
+}
+
+// --- FrameDecoder: feed the sign-on response, expect one valid frame ---
+const respBytes = [0x1b,0x00,0x00,0x1d,0x00,0x00,0x00,0x0e,0x86,0x01,0x01,0x07,0x01,0x01,0x01,0x07,0x06,0x01,
+  0x00,0x00,0x00,0x00,0x00,0x00,0x4a,0x54,0x41,0x47,0x49,0x43,0x45,0x20,0x6d,0x6b,0x49,0x49,0x00,0x6f,0x56];
+const dec = new FrameDecoder();
+const frames = dec.push(respBytes);
+test('FrameDecoder yields exactly 1 frame', frames.length === 1, `got ${frames.length}`);
+test('FrameDecoder frame crcOk', frames[0] && frames[0].crcOk === true);
+test('FrameDecoder frame is RSP_SIGN_ON (0x86), seq 0', frames[0] && frames[0].body[0] === 0x86 && frames[0].seq === 0);
+
+// --- FrameDecoder handles split chunks (stream reassembly) ---
+const dec2 = new FrameDecoder();
+let acc = [];
+acc = acc.concat(dec2.push(respBytes.slice(0, 5)));   // partial
+acc = acc.concat(dec2.push(respBytes.slice(5)));       // rest
+test('FrameDecoder reassembles a split frame', acc.length === 1 && acc[0].crcOk === true);
+
+// --- Intel HEX parser ---
+const hexData = ':0400000012345678E4\n:00000001FF\n';   // 4 data bytes 12 34 56 78 at addr 0
+const parsed = parseIntelHex(hexData);
+test('parseIntelHex length', parsed.length === 4, `got ${parsed.length}`);
+test('parseIntelHex bytes', hex(parsed) === '12 34 56 78', `got ${hex(parsed)}`);
+
+document.getElementById('summary').innerHTML =
+  fail === 0 ? `<span class="pass">ALL ${pass} TESTS PASSED</span>` : `<span class="fail">${fail} FAILED</span>, ${pass} passed`;
+</script>

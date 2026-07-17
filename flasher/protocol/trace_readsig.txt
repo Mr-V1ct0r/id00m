@@ -1,0 +1,107 @@
+
+avrdude.exe: Version 6.3-20190619
+             Copyright (c) 2000-2005 Brian Dean, http://www.bdmicro.com/
+             Copyright (c) 2007-2014 Joerg Wunsch
+
+             System wide configuration file is "C:\Users\v1cto\AppData\Local\Arduino15\packages\arduino\tools\avrdude\6.3.0-arduino17\etc\avrdude.conf"
+
+             Using Port                    : COM6
+             Using Programmer              : jtag2updi
+             Overriding Baud Rate          : 115200
+avrdude.exe: jtagmkII_open_pdi()
+avrdude.exe: jtagmkII_getsync()
+avrdude.exe: jtagmkII_getsync(): Sending sign-on command: 
+avrdude.exe: jtagmkII_send(): sending 1 bytes
+avrdude.exe: Send: . [1b] . [00] . [00] . [01] . [00] . [00] . [00] . [0e] . [01] . [f3] . [97] 
+avrdude.exe: jtagmkII_recv():
+avrdude.exe: ser_recv(): programmer is not responding
+avrdude.exe: jtagmkII_recv(): Timeout receiving packet
+avrdude.exe: jtagmkII_getsync(): sign-on command: status -1
+avrdude.exe: jtagmkII_getsync(): Sending sign-on command: 
+avrdude.exe: jtagmkII_send(): sending 1 bytes
+avrdude.exe: Send: . [1b] . [00] . [00] . [01] . [00] . [00] . [00] . [0e] . [01] . [f3] . [97] 
+avrdude.exe: jtagmkII_recv():
+avrdude.exe: ser_recv(): programmer is not responding
+avrdude.exe: jtagmkII_recv(): Timeout receiving packet
+avrdude.exe: jtagmkII_getsync(): sign-on command: status -1
+avrdude.exe: jtagmkII_getsync(): Sending sign-on command: 
+avrdude.exe: jtagmkII_send(): sending 1 bytes
+avrdude.exe: Send: . [1b] . [00] . [00] . [01] . [00] . [00] . [00] . [0e] . [01] . [f3] . [97] 
+avrdude.exe: jtagmkII_recv():
+avrdude.exe: ser_recv(): programmer is not responding
+avrdude.exe: jtagmkII_recv(): Timeout receiving packet
+avrdude.exe: jtagmkII_getsync(): sign-on command: status -1
+avrdude.exe: jtagmkII_getsync(): Sending sign-on command: 
+avrdude.exe: jtagmkII_send(): sending 1 bytes
+avrdude.exe: Send: . [1b] . [00] . [00] . [01] . [00] . [00] . [00] . [0e] . [01] . [f3] . [97] 
+avrdude.exe: jtagmkII_recv():
+avrdude.exe: ser_recv(): programmer is not responding
+avrdude.exe: jtagmkII_recv(): Timeout receiving packet
+avrdude.exe: jtagmkII_getsync(): sign-on command: status -1
+avrdude.exe: jtagmkII_getsync(): Sending sign-on command: 
+avrdude.exe: jtagmkII_send(): sending 1 bytes
+avrdude.exe: Send: . [1b] . [00] . [00] . [01] . [00] . [00] . [00] . [0e] . [01] . [f3] . [97] 
+avrdude.exe: jtagmkII_recv():
+avrdude.exe: ser_recv(): programmer is not responding
+avrdude.exe: jtagmkII_recv(): Timeout receiving packet
+avrdude.exe: jtagmkII_getsync(): sign-on command: status -1
+avrdude.exe: jtagmkII_getsync(): Sending sign-on command: 
+avrdude.exe: jtagmkII_send(): sending 1 bytes
+avrdude.exe: Send: . [1b] . [00] . [00] . [01] . [00] . [00] . [00] . [0e] . [01] . [f3] . [97] 
+avrdude.exe: jtagmkII_recv():
+avrdude.exe: ser_recv(): programmer is not responding
+avrdude.exe: jtagmkII_recv(): Timeout receiving packet
+avrdude.exe: jtagmkII_getsync(): sign-on command: status -1
+avrdude.exe: jtagmkII_getsync(): Sending sign-on command: 
+avrdude.exe: jtagmkII_send(): sending 1 bytes
+avrdude.exe: Send: . [1b] . [00] . [00] . [01] . [00] . [00] . [00] . [0e] . [01] . [f3] . [97] 
+avrdude.exe: jtagmkII_recv():
+avrdude.exe: ser_recv(): programmer is not responding
+avrdude.exe: jtagmkII_recv(): Timeout receiving packet
+avrdude.exe: jtagmkII_getsync(): sign-on command: status -1
+avrdude.exe: jtagmkII_getsync(): Sending sign-on command: 
+avrdude.exe: jtagmkII_send(): sending 1 bytes
+avrdude.exe: Send: . [1b] . [00] . [00] . [01] . [00] . [00] . [00] . [0e] . [01] . [f3] . [97] 
+avrdude.exe: jtagmkII_recv():
+avrdude.exe: ser_recv(): programmer is not responding
+avrdude.exe: jtagmkII_recv(): Timeout receiving packet
+avrdude.exe: jtagmkII_getsync(): sign-on command: status -1
+avrdude.exe: jtagmkII_getsync(): Sending sign-on command: 
+avrdude.exe: jtagmkII_send(): sending 1 bytes
+avrdude.exe: Send: . [1b] . [00] . [00] . [01] . [00] . [00] . [00] . [0e] . [01] . [f3] . [97] 
+avrdude.exe: jtagmkII_recv():
+avrdude.exe: ser_recv(): programmer is not responding
+avrdude.exe: jtagmkII_recv(): Timeout receiving packet
+avrdude.exe: jtagmkII_getsync(): sign-on command: status -1
+avrdude.exe: jtagmkII_getsync(): Sending sign-on command: 
+avrdude.exe: jtagmkII_send(): sending 1 bytes
+avrdude.exe: Send: . [1b] . [00] . [00] . [01] . [00] . [00] . [00] . [0e] . [01] . [f3] . [97] 
+avrdude.exe: jtagmkII_recv():
+avrdude.exe: ser_recv(): programmer is not responding
+avrdude.exe: jtagmkII_recv(): Timeout receiving packet
+avrdude.exe: jtagmkII_getsync(): sign-on command: status -1
+avrdude.exe: jtagmkII_getsync(): Sending sign-on command: 
+avrdude.exe: jtagmkII_send(): sending 1 bytes
+avrdude.exe: Send: . [1b] . [00] . [00] . [01] . [00] . [00] . [00] . [0e] . [01] . [f3] . [97] 
+avrdude.exe: jtagmkII_recv():
+avrdude.exe: ser_recv(): programmer is not responding
+avrdude.exe: jtagmkII_recv(): Timeout receiving packet
+avrdude.exe: jtagmkII_getsync(): sign-on command: status -1
+avrdude.exe: jtagmkII_getsync(): Sending sign-on command: 
+avrdude.exe: jtagmkII_send(): sending 1 bytes
+avrdude.exe: Send: . [1b] . [00] . [00] . [01] . [00] . [00] . [00] . [0e] . [01] . [f3] . [97] 
+avrdude.exe: jtagmkII_recv():
+avrdude.exe: ser_recv(): programmer is not responding
+avrdude.exe: jtagmkII_recv(): Timeout receiving packet
+avrdude.exe: jtagmkII_getsync(): sign-on command: status -1
+avrdude.exe: jtagmkII_getsync(): Sending sign-on command: 
+avrdude.exe: jtagmkII_send(): sending 1 bytes
+avrdude.exe: Send: . [1b] . [00] . [00] . [01] . [00] . [00] . [00] . [0e] . [01] . [f3] . [97] 
+avrdude.exe: jtagmkII_recv():
+avrdude.exe: ser_recv(): programmer is not responding
+avrdude.exe: jtagmkII_recv(): Timeout receiving packet
+avrdude.exe: jtagmkII_getsync(): sign-on command: status -1
+avrdude.exe: jtagmkII_getsync(): Sending sign-on command: 
+avrdude.exe: jtagmkII_send(): sending 1 bytes
+avrdude.exe: Send: . [1b] . [00] . [00] . [01] . [00] . [00] . [00] . [0e] . [01] . [f3] . [97] 
+avrdude.exe: jtagmkII_recv():

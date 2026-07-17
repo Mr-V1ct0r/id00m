@@ -1,0 +1,59 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>ID00M flasher — read-only identify test</title>
+<style>
+  body { font: 14px/1.55 system-ui, sans-serif; max-width: 820px; margin: 2rem auto; padding: 0 1rem; }
+  h1 { font-size: 1.2rem; } button { font: inherit; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+  #log { background: #0b1020; color: #cbd5e1; padding: 12px; border-radius: 8px; height: 340px; overflow-y: auto;
+         white-space: pre-wrap; font: 12px/1.5 ui-monospace, monospace; margin-top: 12px; }
+  .ok { color: #4ade80; } .err { color: #f87171; } .warn { color: #fbbf24; } .dim { color: #64748b; }
+  #result { font-weight: 700; margin-top: 12px; }
+</style>
+<h1>ID00M flasher — read-only identify test</h1>
+<p>Safe, <b>no-write</b> milestone: 1200-touch → sign-on → enter UPDI progmode → read the chip signature
+(expect <code>1E 95 51</code>). Proves the whole WebSerial <code>jtag2updi</code> handshake without touching
+flash. <b>Chromium desktop browser + served over localhost</b> (<code>python -m http.server</code> in
+<code>flasher/</code> → <code>http://localhost:8000/test/identify.html</code>). Plug the module in first.</p>
+<button id="go">Connect &amp; Identify</button>
+<div id="result"></div>
+<div id="log"></div>
+<script type="module">
+import { Jtag2Updi, EXPECTED_SIGNATURE, withRetry } from '../webserial-jtag2updi.js';
+
+const logEl = document.getElementById('log'), resEl = document.getElementById('result');
+const t0 = () => performance.now();
+function log(msg, cls) { logEl.innerHTML += `<span class="${cls||''}">${msg}</span>\n`; logEl.scrollTop = logEl.scrollHeight; }
+const hex = (a) => a.map((x) => x.toString(16).padStart(2, '0')).join(' ');
+
+document.getElementById('go').onclick = async () => {
+  resEl.textContent = '';
+  if (!('serial' in navigator)) { log('Web Serial not available — use Chrome/Edge/Opera/Brave on desktop.', 'err'); return; }
+  let port;
+  try { port = await Jtag2Updi.requestPort(); }
+  catch (e) { log('No port selected.', 'warn'); return; }
+
+  try {
+    const res = await withRetry(async (attempt) => {
+      if (attempt > 0) log(`— retry ${attempt} —`, 'warn');
+      const dev = new Jtag2Updi(port);
+      const start = t0();
+      try {
+        log('1200-bps touch…', 'dim');           await dev.touch1200();
+        log('open @115200…', 'dim');              await dev.open();
+        log('sign-on + enter progmode…', 'dim');  await dev.signOnAndEnterProgmode();
+        log('reading signature…', 'dim');         const sig = await dev.readSignature();
+        await dev.leave();
+        log(`signature = ${hex(sig)}  (${Math.round(t0()-start)} ms)`, 'ok');
+        return sig;
+      } finally { await dev.close(); }
+    }, { tries: 4, onRetry: (n, max, e) => log(`attempt failed: ${e.message}`, 'err') });
+
+    const match = res.length === 3 && res.every((b, i) => b === EXPECTED_SIGNATURE[i]);
+    if (match) { resEl.innerHTML = '<span style="color:#15803d">✓ ATmega4809 identified — handshake works end-to-end.</span>'; log('MATCH: ATmega4809. The jtag2updi handshake is proven.', 'ok'); }
+    else { resEl.innerHTML = '<span style="color:#b45309">Connected, but signature did not match 1E 95 51.</span>'; log(`got ${hex(res)}, expected ${hex(EXPECTED_SIGNATURE)}`, 'warn'); }
+  } catch (e) {
+    log(`gave up after retries: ${e.message}`, 'err');
+    resEl.innerHTML = '<span style="color:#b91c1c">Failed. Unplug the USB, plug it back in, and try again.</span>';
+  }
+};
+</script>

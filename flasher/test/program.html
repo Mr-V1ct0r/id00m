@@ -1,0 +1,87 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>ID00M flasher — write-path test</title>
+<style>
+  body { font: 14px/1.55 system-ui, sans-serif; max-width: 860px; margin: 2rem auto; padding: 0 1rem; }
+  h1 { font-size: 1.2rem; } button { font: inherit; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-right: 8px; }
+  button:disabled { opacity: .5; cursor: default; }
+  .warn-box { background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 10px 14px; }
+  #bar { height: 14px; background: #e5e7eb; border-radius: 7px; overflow: hidden; margin: 10px 0; }
+  #barfill { height: 100%; width: 0; background: #2563eb; transition: width .1s; }
+  #log { background: #0b1020; color: #cbd5e1; padding: 12px; border-radius: 8px; height: 300px; overflow-y: auto;
+         white-space: pre-wrap; font: 12px/1.5 ui-monospace, monospace; margin-top: 12px; }
+  .ok { color: #4ade80; } .err { color: #f87171; } .warn { color: #fbbf24; } .dim { color: #64748b; }
+  #result { font-weight: 700; margin-top: 10px; }
+</style>
+<h1>ID00M flasher — write-path test</h1>
+<p>Validates the flash write path. <b>Do step 1 first</b> (read-only) to confirm read-back works, then step 2.
+Chromium desktop, served over localhost, module plugged in.</p>
+<div class="warn-box"><b>Safe test procedure:</b> pick the firmware currently on the module
+(<code>build/custom/IDUM_Custom.ino.hex</code>). Step 1 only reads. Step 2 erases &amp; re-writes that same
+image, so a success leaves the module exactly as it was. If anything goes wrong, recover with
+<code>.\build.ps1 -Upload</code> (or <code>-Restore</code> for stock) — arduino-cli flashing always works.</div>
+
+<p style="margin-top:16px"><input type="file" id="file" accept=".hex"> <span id="fileinfo" class="dim"></span></p>
+<button id="btnVerify" disabled>1. Verify only (read-back vs file, no write)</button>
+<button id="btnFlash" disabled>2. Flash + verify</button>
+<div id="bar"><div id="barfill"></div></div>
+<div id="result"></div>
+<div id="log"></div>
+
+<script type="module">
+import { Jtag2Updi, parseIntelHex, withRetry } from '../webserial-jtag2updi.js';
+
+const $ = (id) => document.getElementById(id);
+const logEl = $('log'), resEl = $('result'), bar = $('barfill');
+let hexText = null;
+function log(m, c) { logEl.innerHTML += `<span class="${c||''}">${m}</span>\n`; logEl.scrollTop = logEl.scrollHeight; }
+const prog = (done, total) => { bar.style.width = (100 * done / total).toFixed(1) + '%'; };
+
+$('file').onchange = async (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  hexText = await f.text();
+  const n = parseIntelHex(hexText).length;
+  $('fileinfo').textContent = `${f.name} — ${n} bytes of program flash`;
+  $('btnVerify').disabled = $('btnFlash').disabled = false;
+};
+
+async function run(label, fn, outerTries) {
+  if (!('serial' in navigator)) { log('Web Serial not available — use a Chromium desktop browser.', 'err'); return; }
+  outerTries = outerTries || 4;
+  resEl.textContent = ''; bar.style.width = '0';
+  let port; try { port = await Jtag2Updi.requestPort(); } catch { log('No port selected.', 'warn'); return; }
+  $('btnVerify').disabled = $('btnFlash').disabled = true;
+  try {
+    await withRetry(async (attempt) => {
+      if (attempt > 0) log(`— retry ${attempt} —`, 'warn');
+      const dev = new Jtag2Updi(port);
+      try { return await fn(dev); }
+      finally { await dev.close(); }
+    }, { tries: outerTries, onRetry: (n, m, e) => log(`attempt failed: ${e.message}`, 'err') });
+  } catch (e) {
+    log(`gave up after retries: ${e.message}`, 'err');
+    resEl.innerHTML = '<span style="color:#b91c1c">Failed. Unplug/replug the USB and try again. (Recover firmware with build.ps1 -Upload if needed.)</span>';
+  } finally { $('btnVerify').disabled = $('btnFlash').disabled = false; }
+}
+
+$('btnVerify').onclick = () => run('verify', async (dev) => {
+  const bytes = parseIntelHex(hexText);
+  log(`read-back verify of ${bytes.length} bytes (no write)…`, 'dim');
+  const t0 = performance.now();
+  const r = await dev.verifyAgainst(bytes, { onProgress: prog });
+  if (r.match) { log(`read-back MATCHES the file (${Math.round(performance.now()-t0)} ms) — readFlash works.`, 'ok'); resEl.innerHTML = '<span style="color:#15803d">✓ Read-back verified — the flash read path is correct.</span>'; }
+  else { log('read-back mismatch: ' + r.error, 'err'); resEl.innerHTML = '<span style="color:#b45309">Read-back did not match — do NOT flash yet; check readFlash.</span>'; }
+});
+
+$('btnFlash').onclick = () => run('flash', async (dev) => {
+  log('FLASHING: erase → write → verify…', 'warn');
+  const t0 = performance.now();
+  await dev.program(hexText, {
+    onPhase: (p) => log(`phase: ${p}`, 'dim'),
+    onProgress: prog,
+    onEvent: (m) => log(m, 'warn'),
+  });
+  log(`flashed + verified OK (${Math.round(performance.now()-t0)} ms). Power-cycle to see the "00" boot LEDs.`, 'ok');
+  resEl.innerHTML = '<span style="color:#15803d">✓ Flashed and verified. The write path works end-to-end.</span>';
+}, 1);  // program() self-recovers internally; don't re-erase/re-write the whole chip on a stray failure
+</script>

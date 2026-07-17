@@ -1,0 +1,16 @@
+# Arduino build artifacts
+build/
+*.o
+*.elf
+*.a
+
+# Editor / OS cruft
+.vscode/
+.DS_Store
+Thumbs.db
+*~
+*.swp
+
+# Local scratch
+scratch/
+tmp/
