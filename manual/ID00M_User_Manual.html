@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Force browsers to revalidate this HTML on each visit. The manual loads as
+     the iframe content of /id00m/resources/, and iframes are governed by their
+     OWN cache headers (not the parent's). Without this, browsers serve an old
+     cached manual after a deploy even with an SG cache flush, because the
+     iframe src URL never changes. -->
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<title>ID00M Firmware v1.0.0 User Manual</title>
+<!-- Google Fonts removed: standalone manual uses a system font stack for body text. -->
+<style>
+  @font-face {
+    font-family: 'White Rabbit';
+    src: url('data:font/woff2;base64,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') format('woff2');
+    font-weight: normal; font-style: normal;
+  }
+  :root {
+    --bg:        #13182a;
+    --bg-light:  #1a2035;
+    --bg-deeper: #0a0d16;
+    --orange:    #f5921e;
+    --white:     #e8eaf0;
+    --muted:     #8890a8;
+    --border:    #2a3050;
+    --table-row: #1e2540;
+    --ok:        #6cd47a;
+    --warn:      #ffb73a;
+    --mono:      'White Rabbit', monospace;
+    --body:      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--white); font-family: var(--body); font-size: 15px; line-height: 1.65; font-weight: 300; scroll-behavior: smooth; }
+
+  /* ── Cover ── */
+  .cover { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; padding: 60px 40px; text-align: center; }
+  .cover-title { font-family: var(--mono); font-size: 52px; color: var(--orange); letter-spacing: 0.08em; border-bottom: 1px solid var(--orange); padding-bottom: 12px; }
+  .cover-firmware { font-family: var(--mono); font-size: 18px; color: var(--orange); letter-spacing: 0.04em; }
+  .cover-subtitle { font-family: var(--mono); font-size: 16px; color: var(--white); }
+  .cover-desc { font-size: 16px; color: var(--muted); max-width: 40em; }
+  .cover-version { font-style: italic; font-size: 14px; color: var(--muted); }
+  .cover-attrib { font-size: 13px; color: var(--muted); max-width: 42em; border-top: 1px solid var(--border); padding-top: 16px; margin-top: 8px; }
+
+  /* ── Sticky page header ── */
+  .page-header { background: var(--bg-light); border-bottom: 1px solid var(--border); padding: 10px 48px; display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 12px; color: var(--muted); max-width: 860px; margin: 0 auto 36px; position: sticky; top: 0; z-index: 10; }
+  .page-header .title { color: var(--white); }
+
+  /* ── Page wrapper ── */
+  .page { max-width: 860px; margin: 0 auto; padding: 0 48px 80px; }
+  @media (max-width: 700px) { .page { padding: 0 20px 60px; } .page-header { padding: 10px 20px; } }
+
+  /* ── Headings ── */
+  .page h1 { font-family: var(--mono); font-size: 26px; color: var(--orange); letter-spacing: 0.04em; margin: 56px 0 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); scroll-margin-top: 56px; }
+  .page h1:first-of-type { margin-top: 0; }
+  .page h2 { font-family: var(--mono); font-size: 17px; color: var(--white); letter-spacing: 0.03em; margin: 32px 0 8px; scroll-margin-top: 56px; }
+  .page h3 { font-size: 15px; font-weight: 600; color: var(--orange); margin: 22px 0 6px; }
+  .page p { margin: 10px 0; }
+  .page strong { color: var(--white); font-weight: 600; }
+  .page em { color: var(--white); font-style: italic; }
+  a { color: var(--orange); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .lead { font-size: 16px; color: var(--muted); }
+
+  .page ul, .page ol { margin: 10px 0 10px 26px; }
+  .page li { margin: 5px 0; }
+  .note { color: var(--muted); font-size: 14px; }
+  code { font-family: var(--mono); font-size: 13px; background: var(--bg-deeper); border: 1px solid var(--border); border-radius: 3px; padding: 1px 5px; color: var(--white); }
+
+  /* ── Callout boxes ── */
+  .callout { background: var(--bg-light); border: 1px solid var(--border); border-left: 3px solid var(--orange); border-radius: 0 6px 6px 0; padding: 12px 16px; margin: 16px 0; }
+  .callout.id00m { border-left-color: var(--ok); }
+  .callout .tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--orange); display: block; margin-bottom: 4px; }
+  .callout.id00m .tag { color: var(--ok); }
+
+  /* ── Tables ── */
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+  th { background: var(--bg-light); color: var(--orange); font-family: var(--mono); font-weight: normal; font-size: 12px; letter-spacing: 0.04em; text-align: left; padding: 8px 12px; border: 1px solid var(--border); }
+  td { padding: 7px 12px; border: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--table-row); }
+
+  /* ── Two-column param layout (per-mode LEFT/RIGHT of PARAM) ── */
+  .param-split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  @media (max-width: 640px) { .param-split { grid-template-columns: 1fr; } }
+  .param-split .col { background: var(--bg-light); border: 1px solid var(--border); border-radius: 6px; padding: 12px 16px; }
+  .param-split .col h4 { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--orange); margin-bottom: 6px; }
+
+  /* ── Figure + diagram placeholder ──
+     .fig-todo is a temporary slot marking where an authored SVG/diagram will
+     go. Replace each with the real graphic as the hybrid graphics pass lands. */
+  figure { margin: 20px 0; text-align: center; }
+  figure img { max-width: 100%; height: auto; border-radius: 6px; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  .fig-todo { border: 1px dashed var(--border); border-radius: 8px; background: repeating-linear-gradient(45deg, var(--bg-light), var(--bg-light) 10px, #171d31 10px, #171d31 20px); color: var(--muted); font-family: var(--mono); font-size: 13px; padding: 28px 20px; text-align: center; margin: 20px 0; }
+  .fig-todo b { color: var(--warn); display: block; font-size: 11px; letter-spacing: 0.08em; margin-bottom: 6px; }
+
+  /* ── Mode-ring diagram (real ring image + positioned highlight overlays) ── */
+  .mode-ring { margin: 22px 0; text-align: center; }
+  .ring-annot { position: relative; display: inline-block; width: 100%; max-width: 330px; margin: 0 auto; line-height: 0; }
+  .mode-ring.mode-ring-sm .ring-annot { max-width: 210px; }
+  .ring-annot img { display: block; width: 100%; height: auto; }
+  .ring-annot .rn { position: absolute; transform: translate(-50%, -50%); min-width: 19px; height: 19px; padding: 0 4px; border-radius: 10px; background: var(--orange); color: #101526; font-family: var(--mono); font-size: 11px; font-weight: bold; line-height: 19px; text-align: center; box-shadow: 0 0 0 2px #101526; }
+  .mode-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px; margin: 12px auto 0; max-width: 560px; font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .mode-legend span { white-space: nowrap; }
+  .mode-legend b { color: var(--orange); font-family: var(--mono); font-weight: normal; margin-right: 3px; }
+
+  /* ── Annotated panel (Quick Reference): numbered markers over the panel image ── */
+  .panel-annot { position: relative; display: inline-block; width: 100%; max-width: 300px; margin: 0 auto; }
+  .panel-annot img { display: block; width: 100%; height: auto; border-radius: 6px; }
+  .panel-annot .pm { position: absolute; transform: translate(-50%, -50%); width: 22px; height: 22px; border-radius: 50%; background: var(--orange); color: #101526; font-family: var(--mono); font-size: 12px; font-weight: bold; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 2px #101526, 0 1px 4px rgba(0,0,0,.55); }
+  .panel-ref { display: block; width: 100%; max-width: 340px; height: auto; margin: 0 auto; border: 1px solid var(--border); border-radius: 8px; }
+  .panel-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 22px; margin: 14px auto 4px; padding: 0; font-size: 13px; color: var(--muted); }
+  .panel-legend li { list-style: none; display: flex; align-items: center; gap: 8px; }
+  .panel-legend .dot { width: 15px; height: 15px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 1px rgba(0,0,0,.4); }
+  .knob-fig { margin: 16px auto 2px; text-align: center; }
+  .knob-fig img { display: block; width: 100%; max-width: 150px; height: auto; margin: 0 auto; }
+  .knob-fig figcaption { margin-top: 4px; font-size: 12px; color: var(--muted); }
+
+  /* ── Flow diagrams (signal flow, first patch) ── */
+  .flow-svg { width: 100%; max-width: 620px; height: auto; display: block; margin: 0 auto; }
+  .flow-img { width: 100%; height: auto; display: block; margin: 0 auto; border: 1px solid var(--border); border-radius: 8px; }
+  figure .flow-img.sig { max-width: 560px; }
+  figure .flow-img.patch { max-width: 470px; }
+
+  /* ── TOC (matches the Cloct manual) ── */
+  .toc { background: var(--bg-light); border: 1px solid var(--border); border-radius: 4px; padding: 16px 22px 20px; margin: 0 0 32px; }
+  .toc .toc-title { font-family: var(--mono); font-size: 16px; color: var(--orange); letter-spacing: 0.05em; margin-bottom: 12px; }
+  .toc ul { list-style: none; margin: 0; padding: 0; }
+  .toc li { margin: 4px 0; line-height: 1.4; }
+  .toc li.toc-h2 { margin-left: 20px; font-size: 13px; }
+  .toc a { color: var(--white); text-decoration: none; }
+  .toc a:hover { color: var(--orange); }
+  .toc li.toc-h1 > a { color: var(--orange); }
+
+  .footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); }
+  .xref { color: var(--orange); }
+
+  /* ── Back-to-top FAB ── */
+  .to-top { position: fixed; right: calc(env(safe-area-inset-right, 0px) + 24px); bottom: calc(env(safe-area-inset-bottom, 0px) + 24px); width: 44px; height: 44px; border-radius: 50%; background: var(--orange); color: var(--bg); display: none; align-items: center; justify-content: center; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,.5); transition: transform .15s ease; }
+  .to-top.is-visible { display: flex; }
+  .to-top:hover { transform: translateY(-2px); text-decoration: none; }
+  .to-top svg { width: 20px; height: 20px; display: block; }
+  @media (max-width: 700px) { .to-top { bottom: calc(env(safe-area-inset-bottom, 0px) + 60px); right: calc(env(safe-area-inset-right, 0px) + 16px); } }
+</style>
+</head>
+<body>
+
+<!-- ── COVER ── -->
+<div class="cover">
+  <div class="cover-title">ID00M</div>
+  <div class="cover-firmware">Firmware v1.0.0</div>
+  <div class="cover-subtitle">User Manual</div>
+  <p class="cover-desc">Free custom firmware for the Mystic Circuits IDUM. Everything IDUM does, plus bug fixes, new modes and options, and a few opinionated changes to how some modes behave.</p>
+  <p class="cover-version">Version 1.0.0 - July 17, 2026</p>
+  <p class="cover-attrib">Based on Eli Pechman's IDUM firmware v.99 (Mystic Circuits), licensed CC BY-SA 4.0. ID00M modifications by 00 Modular, released under the same license. IDUM and the IDUM name are by Mystic Circuits; ID00M is an independent community modification and is not affiliated with or endorsed by Mystic Circuits.</p>
+</div>
+
+<!-- ── STICKY HEADER ── -->
+<div class="page-header">
+  <span class="title">ID00M User Manual</span>
+  <span>v1.0.0</span>
+</div>
+
+<div class="page">
+
+  <!-- ── AUTO TABLE OF CONTENTS ── -->
+  <nav id="manual-toc" class="toc" aria-label="Contents"></nav>
+
+  <h1>Overview</h1>
+  <p class="lead">ID00M is a free, open-source custom firmware for the Mystic Circuits <strong>IDUM</strong>, based on Eli Pechman's <strong>v.99</strong>. It keeps everything IDUM already does and adds bug fixes, new modes and options, and a few opinionated changes to how some modes behave.</p>
+  <p>Normally, making complex electronic music with the modular requires either meticulous sequencing done in advance or a large ecosystem of modules. IDUM makes this easier: instead of generating musical patterns on its own, it acts like an effects processor for the sequences that run through it. Just as a filter or delay lets you alter a sound by twisting knobs, IDUM manipulates the actual gates and sequences of connected modules, but with a level of playability not normally accessible to a sequencer. It can do anything from slightly varying carefully crafted sequences to turning your music into an onslaught of controlled chaos.</p>
+  <div class="callout id00m">
+    <span class="tag">Running ID00M?</span>
+    <p style="margin:0">At power-on, ID00M lights the <strong>first and last ring LEDs together</strong> (a "00" signature) for about a second, so you can tell at a glance the module is running ID00M and not stock. Stock v.99 lights a single third LED instead.</p>
+  </div>
+  <p class="note">This manual follows the structure of the original IDUM manual. Sections marked <span style="color:var(--ok)">ID00M</span> describe behavior that is new or changed from stock IDUM. Flashing is always reversible: the <a href="https://00modular.com/id00m/resources/#firmware">firmware updater</a> can put Eli's stock v.99 back on the module at any time.</p>
+
+  <h1>New in ID00M</h1>
+  <p class="lead">Already know IDUM? Start here. ID00M keeps everything IDUM does, so this section is the fast path to everything it changes and adds. The rest of the manual then covers the module from the ground up.</p>
+
+  <h2>Bug fixes</h2>
+  <p>These restore behavior IDUM was meant to have; nothing here changes its character.</p>
+  <ul>
+    <li><strong>Seeded randomness.</strong> Stock IDUM replayed the identical "random" sequence on every power-up. ID00M seeds from hardware entropy at boot, so it genuinely varies each time.</li>
+    <li><strong>Faithful looper.</strong> Split mode no longer fires a modification on steps that recorded none; recorded gates and their modifications are no longer rotated out of alignment; and a looped ratchet now uses the same PARAM-to-speed mapping as live playing.</li>
+    <li><strong>Bouncing ball, output 3</strong> no longer inherits a stale timing value from the previous modification.</li>
+    <li><strong>Rotate in split mode</strong> now honors each channel's own PARAM (channels 2-4 used to all follow channel 1).</li>
+    <li><strong>Back-to-back modifications</strong> use the current MODE-dial position instead of the previous modification's mode.</li>
+    <li><strong>Power-on with modes removed</strong> no longer strands the module on a removed mode.</li>
+    <li>Under the hood: interrupt safety, a ratchet divide-by-zero guard, and about 2 KB of RAM reclaimed.</li>
+  </ul>
+
+  <h2>New features</h2>
+
+  <h3>Per-channel clock multiply / divide</h3>
+  <p>The headline feature. Each of the four channels can run its <strong>bursts and bouncing balls</strong> at its own rate: <strong>&divide;4 &divide;3 &divide;2 &times;1 &times;2 &times;3 &times;4 &times;8</strong>. So every drum voice can ratchet or bounce at a different speed against the same clock, for the long-requested "ch1 x1, ch2 x2, ch3 x4, ch4 x8" idea. It is set in a dedicated editor reached from page 2 of the setup menu by flipping the CYCLE switch up; see the <em>Page 3 per-channel clock editor</em> for the controls. (MULTIPLY / DIVIDE is excluded, since it already tracks each channel's own input rhythm.)</p>
+
+  <h3>Linear drumming</h3>
+  <p>An optional one-voice-at-a-time output filter: when two channels would fire at the same instant, only the highest-priority one passes. Priority is editable per channel. Turns dense chaos into a tight, hocketed groove. Set it in <em>Page 2 options</em>.</p>
+
+  <h3>MERGE (OFF / ADD / CUT / MIX)</h3>
+  <p>Every stock IDUM mode <em>replaces</em> your incoming triggers with its own output, which is much of why IDUM can feel destructive. MERGE lets a mode instead <strong>ADD</strong> to the input (keep your hits, layer the mode on top) or <strong>CUT</strong> it (keep your hits, but subtract or re-gate them where the mode fires). It is set in <em>Page 2 options</em> at ring slot 6.</p>
+  <ul>
+    <li>It applies to the four movement / pattern modes only - ROTATE, DELAY, BREAK, SCATTER. The trigger-anchored modes (HOLD, BURST, MULTIPLY/DIVIDE, BOUNCING BALL) always replace.</li>
+    <li><strong>OFF</strong> - stock replace everywhere.</li>
+    <li><strong>ADD</strong> - all four eligible modes layer on top of your input. Notably, ADD on DELAY is a true dry-plus-delayed echo.</li>
+    <li><strong>CUT</strong> - affects ROTATE and BREAK only (hocket; pattern-gated holes in the beat). DELAY and SCATTER stay on plain replace.</li>
+    <li><strong>MIX</strong> - DELAY and SCATTER ADD while ROTATE and BREAK CUT, all at once.</li>
+  </ul>
+  <p class="note">MERGE currently affects live playing, not loop playback.</p>
+  <p class="note">Credit: the MERGE concept and its ADD / CUT naming come from <strong>"Glitch, Please!"</strong> by Patrik Andersson (MorphWorx), a VCV Rack and 4ms MetaModule port of IDUM. ID00M's version is an independent implementation and behaves differently, so treat it as inspired by his work rather than a match to it. If you patch in VCV Rack, go check out MorphWorx.</p>
+
+  <h3>Break pattern banks and speed</h3>
+  <p>A second bank of 16 break patterns, mostly grooves based on clave and world rhythms (son, rumba, bossa, tresillo, cinquillo, cascara, bembe, songo, baiao, samba) plus a few true polyrhythms (3:2, 4:3, 5:4, hemiola), alongside the original drum patterns. A break speed multiplier runs the patterns at 1x / 2x / 3x / 4x. See <em>7 - BREAK mode</em>.</p>
+
+  <h3>Split-mode PARAM freeze</h3>
+  <p>Click the split menu slot (see <em>Page 1 options</em>) once for split, twice for split + freeze (shown by a blinking loop LED). A third click turns off split mode. With freeze on, the PARAM knob is snapshotted the instant each channel starts a modification and held for its duration, so in split mode each channel can hold its own PARAM (and mode) by moving the knob as they trigger, instead of all four tracking the live knob. It tends to settle the output, a handy way to tame the chaos. This was a hidden, source-only option in stock IDUM.</p>
+
+  <h3>Factory reset</h3>
+  <p>Hold REMOVE MODE while powering on to wipe back to defaults. Keep the button held and the module confirms the reset: the loop LED lights and the ring LEDs run a short sweeping animation for as long as you hold it. Release REMOVE MODE and it plays the normal power-on "00" signature (the first and last ring LEDs lit together for about a second), now running factory defaults. A normal power-up never shows the sweeping animation, so that is your confirmation the reset took.</p>
+
+  <h2>Changed mode behavior</h2>
+  <p>A few modes play differently than stock IDUM (full detail in the <em>Modes</em> section):</p>
+  <ul>
+    <li><strong>SCATTER replaces CLOCK SKIP</strong> in the purple slot (slot 8): it nudges triggers off-grid to a quantized sub-slot of their own gap. See <em>8 - SCATTER mode</em>.</li>
+    <li><strong>BURST, counter-clockwise</strong> is now probabilistic thinning (randomly drops triggers) instead of a slow clock-divide echo. See <em>2 - BURST mode</em>.</li>
+    <li><strong>MULTIPLY / DIVIDE, counter-clockwise</strong> is now a true trigger divider (passes 1 of every N triggers). See <em>3 - MULTIPLY / DIVIDE mode</em>.</li>
+    <li><strong>GATE DELAY</strong> is now a clean, monotonic musical delay, uniform across channels. See <em>6 - GATE DELAY mode</em>.</li>
+  </ul>
+
+  <h1>Installation</h1>
+  <p>Follow the installation instructions carefully to avoid module or rack damage.</p>
+  <ol>
+    <li>Ensure the power connection is disconnected before installing the device.</li>
+    <li>Identify 10 HP of free rack space in which to install the module.</li>
+    <li>Connect the 10-pin connector from the IDC ribbon power cable to the header on the rear side of the module, aligning correctly with the red stripe on the ribbon conductor nearest to the -12V pin indicator on the header.</li>
+    <li>Insert the cable through the rack and connect the 16-pin side of the IDC ribbon cable to the rack power supply header. Ensure the pins are aligned with the red stripe on the ribbon conductor nearest the -12V pin on the header.</li>
+    <li>Position the module into the dedicated rack position.</li>
+    <li>Attach the 4 x M3 screws into the locator holes and the rack mount, taking care not to over-tighten.</li>
+    <li>Turn on the power to the rack.</li>
+    <li>The module will start up and be ready to use. (ID00M shows its "00" boot signature; see Overview.)</li>
+  </ol>
+  <p>Ensure the following conditions are correct for trouble-free installation:</p>
+  <ul>
+    <li>Rack power supply can accommodate all installed modules' total current ratings. IDUM power requirements are +12V 50mA, -12V 50mA, +5V not used.</li>
+    <li>Module power cable orientation is correct at both the rack and module side. Use the module-supplied IDC ribbon cable.</li>
+    <li>Ensure the rack earth / grounding is correct.</li>
+    <li>Take care to avoid patch cables falling into the rack or touching module PCBs.</li>
+  </ul>
+  <div class="callout"><span class="tag">Power orientation</span><p style="margin:0">The ribbon cable's <strong>red stripe</strong> goes to the <strong>-12V</strong> pin at both ends: on the module header (look for the -12V mark or the white PCB tag) and on the rack power bus board. Reversing it can damage the module.</p></div>
+
+  <h1>Quick Reference</h1>
+  <p>The panel at a glance. The numbered callouts match the table below, and each callout is coloured by type: see the legend.</p>
+  <figure>
+    <img class="panel-ref" src="panel-ref.png" width="1264" height="2207" loading="lazy" alt="IDUM front panel with numbered callouts 1 to 21, coloured green for physical controls, blue for selectable mode options and white for physical inputs and outputs.">
+    <ul class="panel-legend">
+      <li><span class="dot" style="background:rgb(141,199,127)"></span>Physical control</li>
+      <li><span class="dot" style="background:rgb(96,84,212)"></span>Selectable mode option</li>
+      <li><span class="dot" style="background:rgb(232,234,240)"></span>Physical input / output</li>
+    </ul>
+    <figcaption>The front panel (the same hardware ID00M runs on). Numbers match the table below.</figcaption>
+  </figure>
+  <table>
+    <tr><th>#</th><th>Control</th><th>Function</th></tr>
+    <tr><td>1</td><td>REMOVE MODE button</td><td>Clears the current mode, and ends an active modification early. Long-press to enter the setup menu. In ID00M, hold it while powering on for a factory reset.</td></tr>
+    <tr><td>2</td><td>CYCLE switch</td><td>Keeps a sequencer plugged into the clock output locked to its original position. In ID00M, flipping it while in the page-2 menu opens the per-channel clock editor.</td></tr>
+    <tr><td>3</td><td>MODE knob</td><td>Selects the modification effect, one of 8. The lit ring LED shows the active mode. Also controllable by CV.</td></tr>
+    <tr><td>4</td><td>HOLD mode</td><td>Alters the length of incoming triggers.</td></tr>
+    <tr><td>5</td><td>BURST mode</td><td>Burst generator activated by incoming triggers.</td></tr>
+    <tr><td>6</td><td>MULTIPLY / DIVIDE mode</td><td>Multiplies or divides the speed of incoming triggers.</td></tr>
+    <tr><td>7</td><td>BOUNCING BALL mode</td><td>Bouncing-ball effect activated by incoming triggers.</td></tr>
+    <tr><td>8</td><td>ROTATE mode</td><td>Scrambles the trigger input-to-output connections.</td></tr>
+    <tr><td>9</td><td>GATE DELAY mode</td><td>Delays incoming triggers by a variable amount.</td></tr>
+    <tr><td>10</td><td>BREAK mode</td><td>Preset rhythms shaped by incoming triggers.</td></tr>
+    <tr><td>11</td><td>SCATTER mode</td><td>Nudges triggers off-grid to a quantized sub-slot of their own gap. In ID00M this replaces the stock SKIP mode in this slot.</td></tr>
+    <tr><td>12</td><td>LOOP button</td><td>Loops the most recent 8 steps of activity. Also controllable by an external trigger.</td></tr>
+    <tr><td>13</td><td>PARAM knob</td><td>Parameter for the active mode; its behavior varies by mode. Also controllable by CV.</td></tr>
+    <tr><td>14</td><td>CHANCE slider</td><td>Probability of a modification occurring, 0 to 100%. Also controllable by CV.</td></tr>
+    <tr><td>15</td><td>LENGTH slider</td><td>Length of the modification, 1 to 8. Also controllable by CV.</td></tr>
+    <tr><td>16</td><td>CV / trigger inputs</td><td>Assignable modulation over chance, mode, param and length, plus a loop trigger.</td></tr>
+    <tr><td>17</td><td>Clock input</td><td>External clock in.</td></tr>
+    <tr><td>18</td><td>Clock output</td><td>Modified clock out.</td></tr>
+    <tr><td>19</td><td>Trigger inputs</td><td>Typically from an external sequencer, LFO or gates. CL is leftmost, then TR1 to TR4.</td></tr>
+    <tr><td>20</td><td>Trigger outputs</td><td>Pass triggers through unmodified, or processed by the selected mode.</td></tr>
+    <tr><td>21</td><td>Input / output LEDs</td><td>One per channel: blue for an input, red for a modified output, and pink for an unmodified output.</td></tr>
+  </table>
+
+  <h1>General Controls</h1>
+  <p>IDUM has 2 rotary controls, 2 selection buttons, 2 slider controls, and a selection switch. These are used to control the available features and effects.</p>
+  <h3>Buttons</h3>
+  <p>Press / tap to select an option, or long-press to change function. The upper-left button is the <strong>REMOVE MODE</strong> control (clear mode / enter setup), and the central button controls the <strong>LOOP</strong> function on/off.</p>
+  <h3>Sliders</h3>
+  <p>Adjust up or down to make a selection across a range. The left slider is the <strong>CHANCE</strong> setting (probability 0-100%); the right slider is <strong>LENGTH</strong> (1-8) for the selected modification.</p>
+  <h3>Large rotary (MODE)</h3>
+  <p>Turn clockwise / counter-clockwise to set the active effect from one of the 8 available modifications. The selected mode's LED illuminates brightly and can be edited by the sliders and PARAM. In loop mode this also selects the start step and manually scrubs the loop.</p>
+  <h3>Small rotary (PARAM)</h3>
+  <p>The PARAM control depends on the current mode and selects one of the available parameters for the active modification. Available settings vary by mode.</p>
+  <h3>Toggle switch (CYCLE)</h3>
+  <p>Maintains the original sequence position of an external sequencer connected to the clock output after applying effects to the clock.</p>
+  <div class="callout id00m">
+    <span class="tag">ID00M</span>
+    <p style="margin:0">ID00M also uses a flip of the <strong>CYCLE</strong> switch (while you are in the page-2 menu) to reach the new <em>Page 3 per-channel clock editor</em>. See <em>New in ID00M</em>.</p>
+  </div>
+  <h3>Channel LEDs</h3>
+  <p>The TR LEDs illuminate to indicate activity on the trigger input (lit blue) and the modified trigger outputs (lit red). Any unmodified output shows a pink LED.</p>
+
+  <h1>Input / Output Assignment</h1>
+  <p>CV inputs can be applied to IDUM for external control and modulation over the chance, mode, parameter, and length functions. In addition, an external trigger can control the loop on/off. One CL (clock) and four TR (trigger) inputs are featured along with their modified output counterparts.</p>
+  <h2>Modulation inputs</h2>
+  <table>
+    <tr><th>Input</th><th>Format</th><th>Range</th><th>Description</th></tr>
+    <tr><td>Chance</td><td>+/- CV input</td><td>0-5</td><td>External control over probability 0-100%</td></tr>
+    <tr><td>Mode</td><td>+/- CV input</td><td>0-5</td><td>External control for mode selection</td></tr>
+    <tr><td>Param</td><td>+/- CV input</td><td>0-5</td><td>External control over parameter setting</td></tr>
+    <tr><td>Loop</td><td>Trigger input</td><td>0-5</td><td>External control for loop on/off</td></tr>
+    <tr><td>Length</td><td>+/- CV input</td><td>0-5</td><td>External control over length 1-8</td></tr>
+  </table>
+  <h2>Clock / trigger inputs</h2>
+  <table>
+    <tr><th>Input</th><th>Format</th><th>Range</th><th>Description</th></tr>
+    <tr><td>CL</td><td>Clock input</td><td>0-5</td><td>External clock in</td></tr>
+    <tr><td>TR1-TR4</td><td>Trigger input</td><td>0-5</td><td>External sequence trigger in</td></tr>
+  </table>
+  <h2>Clock / trigger outputs</h2>
+  <table>
+    <tr><th>Output</th><th>Format</th><th>Range</th><th>Description</th></tr>
+    <tr><td>CL</td><td>Clock output</td><td>0-5</td><td>Modified clock output to external device</td></tr>
+    <tr><td>TR1-TR4</td><td>Trigger output</td><td>0-5</td><td>Modified output to external device</td></tr>
+  </table>
+  <p class="note">Trigger inputs activate at approximately 1.8V. CV inputs accept positive and negative voltages.</p>
+
+  <h1>Functional Overview</h1>
+  <p>IDUM has 4 trigger inputs which can be connected to an external gate source, typically a gate sequencer or LFO. The IDUM modification and on-board effects are then applied to the gate signals before passing them to the outputs. This applies an effect to modify incoming sequences in a way that is playable with tactile controls, in the same way an audio effect can modify the signal of an audio source.</p>
+  <p>All triggers connected at the inputs are affected by the currently active modification effect, and this affected signal is delivered to the outputs. Input activity is indicated by the TR1-TR4 channel LEDs illuminated blue; output activity by the channel LEDs illuminated red; an unmodified output LED is pink.</p>
+  <figure>
+    <img class="flow-img sig" src="signal-flow.png" width="1763" height="1706" loading="lazy" alt="Signal flow: a gate source feeds IDUM's four trigger inputs; the modification effect, set by CHANCE and LENGTH and fed by the looper, passes to the four trigger outputs and on to a drum module.">
+    <figcaption>IDUM sits between your gate source and your sounds, modifying the triggers as they pass through. Input activity lights the channel LEDs blue; modified output lights them red.</figcaption>
+  </figure>
+  <p>IDUM synchronizes to an external clock in order to activate modifications and produce bursts in time with the sequence. It also has modes that manipulate the incoming clock in order to change the speed and order of steps of whatever sequencer you have connected to IDUM's clock output. The normal function will typically cause your external sequencer to drift out of sync with the original sequence. But when the <strong>CYCLE</strong> switch is in its upright position, IDUM sends out a burst of clocks at the end of every modification to catch up to its original sequencer position. This works better with some sequencers than others; complex digital sequencers usually work less well with IDUM's clock manipulation than a more fundamental analog sequencer.</p>
+  <table>
+    <tr><th>CYCLE</th><th>Behavior</th></tr>
+    <tr><td>Up</td><td>Maintains the original sequence position of sequencers connected to the clock output.</td></tr>
+    <tr><td>Down</td><td>Allows the connected sequencer to drift in position depending on each activated modification.</td></tr>
+  </table>
+
+  <h1>First Patch</h1>
+  <p>To help speed up the learning curve with IDUM, a recommended first patch is shown. This is a good starting point and demonstrates the features described in this manual. Other patches and configurations can also be used.</p>
+  <p>A sequencer is used here as a trigger input to which IDUM applies modifications. The modified trigger outputs activate three drum voices while an envelope controls the synth's pitched voice. The clock output drives an 8-step sequencer that controls oscillator pitch.</p>
+  <figure>
+    <img class="flow-img patch" src="first-patch.png" width="1738" height="2288" loading="lazy" alt="First patch routing: a trigger sequencer and clock feed IDUM's inputs; the four trigger outputs drive bass, snare and hi-hat plus an envelope into a VCA, while the clock output drives an 8-step sequencer and oscillator. All voices sum through a mixer to audio out.">
+    <figcaption>A recommended first patch. IDUM modifies the sequencer's triggers into three drum voices; its clock output drives an 8-step sequencer for a melodic voice. Everything then goes to a mixer and out.</figcaption>
+  </figure>
+
+  <h1>Getting Started</h1>
+  <p>To learn about each mode effect on IDUM, it is good to start with the first patch and try out each mode by following along with this manual. All you really need is a clock at the clock input and some sounds to plug the trigger outputs into. To start out: set the <strong>CHANCE</strong> slider all the way up, the <strong>LENGTH</strong> slider all the way down, and the <strong>PARAM</strong> knob at 12 o'clock. From here the MODE dial selects which effect is engaged.</p>
+  <h2>Select mode</h2>
+  <p>Turn the large MODE rotary to select the modification mode. The LED for the selected mode is bright, LEDs for available modes are dim, and removed modes are unlit. When a modification is active, only the selected mode's LED is illuminated. Modes are locked in once a modification activates and only change at the end of each modification.</p>
+  <h2>Remove mode</h2>
+  <p>You can remove the current mode from the pool of available modifications by quickly pressing the REMOVE MODE button on the selected mode. This is also a way to prematurely end any active modification. Removed modes have an unlit LED, and can be reinstated by quickly pressing REMOVE MODE on that mode again. Note that incoming mode CV can affect the selected mode, so the dial may not point to the actual selected mode; to avoid this, remove modulation before adding or removing modes.</p>
+  <div class="callout id00m">
+    <span class="tag">ID00M fix</span>
+    <p style="margin:0">On stock IDUM, powering on with modes removed could strand the module on a removed mode (booting stuck on "hold" until you nudged the knob). ID00M fixes this: sweeping the MODE knob only ever lands on active modes.</p>
+  </div>
+  <h2>Adjust parameters</h2>
+  <p>Adjust the PARAM knob to alter the behavior of the active modification. PARAM behaves differently depending on which mode is active; each mode's PARAM behavior is described in the <em>Modes</em> section.</p>
+  <h2>Adjust length</h2>
+  <p>Adjust the LENGTH slider to define how long each modification stays active. Every time a modification activates, LENGTH locks it in for a set number of clock cycles. In all modes except SCATTER (clock) the clock output is paused during a modification, causing an external sequencer to hold position; the clock only advances on the first step of the modification.</p>
+  <h2>Adjust chance</h2>
+  <p>Adjust the CHANCE slider to set the probability of a modification occurring. The choice to activate happens whenever a clock is received. At 0% (bottom) no modifications occur; at 100% (top) modifications always apply; in between, a modification activates by chance based on the stated percentage.</p>
+  <div class="callout id00m">
+    <span class="tag">ID00M fix</span>
+    <p style="margin:0">Stock IDUM never seeded its random number generator, so it replayed the <em>identical</em> "random" sequence of modifications on every power-up. ID00M seeds from hardware entropy at boot, so the module genuinely varies each time.</p>
+  </div>
+  <h2>Loop</h2>
+  <p>IDUM can loop the most recent eight steps of activity. Engage the looper with the LOOP button (lit = on) or by sending a gate into the loop gate input. This captures the last 8 steps of gate inputs along with their modifications and settings, then replays them in a loop; IDUM's controls then govern loop playback. See <em>Looper</em>.</p>
+
+  <h1>Modes</h1>
+  <p>IDUM has 8 modification modes on the MODE ring. Each mode's PARAM knob usually has a distinct behavior on its left half (counter-clockwise from noon) and right half (clockwise from noon). The sections below port the original IDUM behavior, with ID00M changes called out.</p>
+  <figure class="mode-ring" data-active="-1"><figcaption>The MODE ring, numbered 1 to 8. Turning the MODE knob clockwise steps through the modes in order; the lit LED shows the active mode. Each mode's section below highlights its position on the ring.</figcaption></figure>
+
+  <h2>1 - HOLD mode</h2>
+  <figure class="mode-ring mode-ring-sm" data-active="0"></figure>
+  <p>HOLD mode modifies the length of incoming triggers. With PARAM at noon, triggers pass through unaltered. Turned clockwise from noon, incoming triggers are lengthened gradually until they are held for the length of the modification. Turned counter-clockwise from noon, incoming triggers are probabilistically skipped, with the likelihood of a skip increasing as the knob turns further counter-clockwise, until completely muted.</p>
+  <figure class="knob-fig"><img src="param-knob.png" width="538" height="617" loading="lazy" alt="PARAM knob with a counter-clockwise arrow on the left and a clockwise arrow on the right."><figcaption>Left card = turn PARAM counter-clockwise from noon; right card = clockwise.</figcaption></figure>
+  <div class="param-split">
+    <div class="col"><h4>Left - skip triggers</h4><p style="margin:0">Sets the probability of incoming gates being skipped. The decision is made independently for each channel when it receives a gate, but the probability is shared across channels. At noon, 0%; fully counter-clockwise, 100%; in between shifts gradually.</p></div>
+    <div class="col"><h4>Right - lengthen triggers</h4><p style="margin:0">Increases the length of incoming triggers by a percentage of the modification length. It only lengthens gates (never shortens them). At noon, triggers pass at their incoming length; fully clockwise, gate ends are extended by the full modification length.</p></div>
+  </div>
+
+  <h2>2 - BURST mode</h2>
+  <figure class="mode-ring mode-ring-sm" data-active="1"></figure>
+  <p>BURST mode activates a trigger burst / ratchet whose speed is a multiple of the incoming clock speed whenever a trigger is received at one of the four trigger inputs. A burst activates the first time a trigger is received at each channel's input and continues for the rest of the modification. The speed is a multiple or division of the most recent clock interval, set by PARAM. Bursts reset whenever a trigger is received, so triggers that are not on quantized clock steps can offset the burst from the clock grid.</p>
+  <figure class="knob-fig"><img src="param-knob.png" width="538" height="617" loading="lazy" alt="PARAM knob with a counter-clockwise arrow on the left and a clockwise arrow on the right."><figcaption>Left card = turn PARAM counter-clockwise from noon; right card = clockwise.</figcaption></figure>
+  <div class="param-split">
+    <div class="col"><h4>Left <span style="color:var(--ok)">(ID00M: thinning)</span></h4><p style="margin:0"><span class="note">Stock: burst-speed division (clock divided by the parameter).</span><br>ID00M replaces the CCW half with <strong>probabilistic thinning</strong>: it randomly drops incoming triggers rather than producing a slow clock-divide echo.</p></div>
+    <div class="col"><h4>Right - burst multiplier</h4><p style="margin:0">Sets the burst-speed multiplication: the output is the clock input multiplied by the parameter value. At high clock speeds it is possible to ask for triggers too fast to produce; in that case the outputs are silent.</p></div>
+  </div>
+  <div class="callout id00m">
+    <span class="tag">ID00M</span>
+    <p style="margin:0">Bursts stay crisp at high multiplication: the trigger pulse width now scales with the subdivision, so fast ratchets smear together less.</p>
+  </div>
+
+  <h2>3 - MULTIPLY / DIVIDE mode</h2>
+  <figure class="mode-ring mode-ring-sm" data-active="2"></figure>
+  <p>MULTIPLY / DIVIDE offers a second flavor of trigger burst whose speed is determined by the time between incoming triggers instead of the clock. Each channel's burst speed changes dynamically as new triggers arrive and can differ from other channels, while sharing the same multiplication / division parameter. The burst start resets whenever a new gate arrives, so the effect can be subtle with a large division parameter.</p>
+  <figure class="knob-fig"><img src="param-knob.png" width="538" height="617" loading="lazy" alt="PARAM knob with a counter-clockwise arrow on the left and a clockwise arrow on the right."><figcaption>Left card = turn PARAM counter-clockwise from noon; right card = clockwise.</figcaption></figure>
+  <div class="param-split">
+    <div class="col"><h4>Left <span style="color:var(--ok)">(ID00M: true divider)</span></h4><p style="margin:0"><span class="note">Stock: divide the most recent trigger interval (an interval-stretch that was nearly inaudible on a steady beat).</span><br>ID00M makes the CCW half a <strong>true trigger divider</strong>: it passes 1 of every N triggers.</p></div>
+    <div class="col"><h4>Right - multiplier</h4><p style="margin:0">Creates bursts whose timing is a multiplication of the most recent trigger interval. At noon the output repeats the most recent interval; fully clockwise, the speed is multiplied by up to 8. As with BURST, very fast requested triggers may come out silent.</p></div>
+  </div>
+  <h2>4 - BOUNCING BALL mode</h2>
+  <figure class="mode-ring mode-ring-sm" data-active="3"></figure>
+  <p>BOUNCING BALL is another flavor of burst that is unquantized from the clock and either increases or decreases in speed over time, like a ball bouncing off a table and losing energy. On the right side of PARAM, triggers start fast and gradually slow for an "expanding" effect; on the left side, triggers start slow and gradually speed up for a "contracting" effect. In both cases the effect gets faster the further from center you travel, and the burst restarts every time a trigger is received.</p>
+  <figure class="knob-fig"><img src="param-knob.png" width="538" height="617" loading="lazy" alt="PARAM knob with a counter-clockwise arrow on the left and a clockwise arrow on the right."><figcaption>Left card = turn PARAM counter-clockwise from noon; right card = clockwise.</figcaption></figure>
+  <div class="param-split">
+    <div class="col"><h4>Left - contract</h4><p style="margin:0">The further counter-clockwise, the faster the ball contracts. Overall contraction length is scaled by the LENGTH slider.</p></div>
+    <div class="col"><h4>Right - expand</h4><p style="margin:0">The further clockwise, the faster the ball starts at the beginning of the effect. Overall expansion speed is scaled by the LENGTH slider.</p></div>
+  </div>
+  <div class="callout id00m">
+    <span class="tag">ID00M fix</span>
+    <p style="margin:0">In bouncing-ball mode, output 3 no longer inherits a stale timing value from the previous modification.</p>
+  </div>
+
+  <h2>5 - ROTATE mode</h2>
+  <figure class="mode-ring mode-ring-sm" data-active="4"></figure>
+  <p>ROTATE scrambles the connection between the trigger inputs and outputs. Turned clockwise from noon, each output shifts right, wrapping around to the left when shifted past output 4. Turned counter-clockwise from noon, inputs and outputs are swapped in pairs to create new arrangements.</p>
+  <figure class="knob-fig"><img src="param-knob.png" width="538" height="617" loading="lazy" alt="PARAM knob with a counter-clockwise arrow on the left and a clockwise arrow on the right."><figcaption>Left card = turn PARAM counter-clockwise from noon; right card = clockwise.</figcaption></figure>
+  <div class="param-split">
+    <div class="col"><h4>Left - scramble / swap index</h4><p style="margin:0">Progressively swaps different pairs of inputs and outputs in a criss-cross pattern.</p></div>
+    <div class="col"><h4>Right - rotate index</h4><p style="margin:0">Rotates outputs to the right, with outputs past output 4 wrapping back around to output 1.</p></div>
+  </div>
+  <div class="callout id00m">
+    <span class="tag">ID00M fix</span>
+    <p style="margin:0">In split mode, ROTATE now honors each channel's own PARAM (channels 2-4 used to all follow channel 1).</p>
+  </div>
+
+  <h2>6 - GATE DELAY mode</h2>
+  <figure class="mode-ring mode-ring-sm" data-active="5"></figure>
+  <p>GATE DELAY postpones the output of each gate to shift the timing of the outputs and create wonky, off-kilter rhythms. Instead of a static delay, it uses the time between the most recent gates at that channel's input as the reference, so the delay for each channel changes dynamically with what is playing. In ID00M, PARAM is a single monotonic sweep: fully counter-clockwise delays each hit by an eighth of its channel's input gap, rising to a full gap fully clockwise. Every shifted hit snaps to a quantized subdivision of that gap, all four channels share the same grid, and the delay is capped at one gap so a delayed hit never runs into the next.</p>
+  <div class="callout id00m">
+    <span class="tag">ID00M: changed character</span>
+    <p style="margin:0">On stock IDUM, DELAY was a bipolar knob with a hard-wired per-channel fan (divisors 8/12/14/16) that landed hits on mismatched, non-musical fractions. ID00M's version is uniform and quantized (above). It <em>shifts</em> each hit later rather than adding a dry copy; for a dry-plus-delayed echo, use MERGE ADD on this mode.</p>
+  </div>
+
+  <h2>7 - BREAK mode</h2>
+  <figure class="mode-ring mode-ring-sm" data-active="6"></figure>
+  <p>BREAK plays a preset rhythm that is altered by incoming triggers. PARAM selects one of the rhythms in the bank, left to right. Whenever a trigger is received at a trigger input, the preset rhythm resets on that channel, turning the preset into a sort of "mask" that turns anything coming in into a breakbeat. The rhythms are written with specific drums in mind (TR1 = bass drum, TR2 = snare, TR3 = hi-hat, TR4 = percussion or a melodic synth line), but feel free to patch each channel into whatever you like. Unlike most modes, PARAM has no left/right split here; presets are selected from fully counter-clockwise to fully clockwise.</p>
+  <div class="callout id00m">
+    <span class="tag">ID00M</span>
+    <p style="margin:0">ID00M adds a <strong>second bank of 16 break patterns</strong> (clave and world rhythms plus a few true polyrhythms) and a <strong>break speed multiplier</strong> (1x / 2x / 3x / 4x). See <em>New in ID00M</em>.</p>
+  </div>
+
+  <h2>8 - SCATTER mode <span style="color:var(--ok);font-size:13px">(ID00M; replaces CLOCK SKIP)</span></h2>
+  <figure class="mode-ring mode-ring-sm" data-active="7"></figure>
+  <div class="callout id00m">
+    <span class="tag">ID00M: new mode</span>
+    <p style="margin:0">ID00M replaces stock IDUM's <strong>CLOCK SKIP</strong> in this slot (the purple slot, following Eli's convention of putting custom behavior there) with <strong>SCATTER</strong>. Where CLOCK SKIP manipulated an external sequencer on the clock output, SCATTER works on the triggers: it randomly displaces incoming hits off their spot to a quantized sub-position of that channel's own gap, for a glitchy, IDM feel. No ID00M mode manipulates the clock output.</p>
+  </div>
+  <p>Each incoming trigger can be thrown forward into the gap that follows it, landing on a quantized subdivision of that gap rather than stacking on top of other hits, so SCATTER cooperates with linear drumming. A hit that does not move passes cleanly on its spot. PARAM is bipolar, and the landing grid is drawn from the Parameter Resolution setting (POW2 = a tight 1/2/4/8; ODD adds triplet and quintuplet subdivisions for an off-kilter feel).</p>
+  <figure class="knob-fig"><img src="param-knob.png" width="538" height="617" loading="lazy" alt="PARAM knob with a counter-clockwise arrow on the left and a clockwise arrow on the right."><figcaption>Left card = turn PARAM counter-clockwise from noon; right card = clockwise.</figcaption></figure>
+  <div class="param-split">
+    <div class="col"><h4>Left - SINGLE</h4><p style="margin:0">Each hit can be thrown to one quantized sub-slot of its gap. The further counter-clockwise, the wider the reachable spread. Short, medium, and long throws stay possible at every setting; the knob opens the ceiling.</p></div>
+    <div class="col"><h4>Right - CASCADE</h4><p style="margin:0">A thrown hit can chain into up to three hits, for stutters and rolls. The further clockwise, the wider the spread and the busier the cascades.</p></div>
+  </div>
+  <p class="note">At center, SCATTER passes through. There is no separate amount control: the one knob sets both how far hits travel and, because on-spot hits stay put, how many move, while CHANCE governs how often the whole effect is active.</p>
+
+  <h1>Looper</h1>
+  <p>IDUM's LOOP function records the eight most recent steps of triggers along with whatever modification activity was happening on each step, then replays those eight steps. While the looper is active, IDUM's controls switch their normal functionality to give control over loop playback. Engage the looper manually with the <strong>LOOP</strong> button under the mode dial, or by sending a gate into the LOOP gate input.</p>
+  <p>The sequencer connected to the clock output has its position manipulated to reflect what the looper is doing. For example, set the loop length to 4 and the external sequencer runs a length of 4; scrub the looper position with the MODE knob and the sequencer scrubs with it.</p>
+  <div class="callout id00m">
+    <span class="tag">ID00M fix</span>
+    <p style="margin:0">The looper now replays faithfully what you recorded: in split mode it no longer fires a modification on steps that recorded none, recorded gates and their modifications are no longer rotated out of alignment, and a looped ratchet uses the same PARAM-to-speed mapping as live playing.</p>
+  </div>
+  <h2>Controls while looping</h2>
+  <table>
+    <tr><th>Control</th><th>Function during loop playback</th></tr>
+    <tr><td>LOOP button</td><td>Tap to toggle loop on or off. The LOOP label illuminates when looper mode is on.</td></tr>
+    <tr><td>LOOP trigger input</td><td>External trigger for controlling loop on / off.</td></tr>
+    <tr><td>MODE knob</td><td>Selects the first step of the loop. Also scrubs loop playback when loop length is set to 1.</td></tr>
+    <tr><td>MODE LEDs</td><td>Show the current step being played by the looper, within the eight possible steps.</td></tr>
+    <tr><td>PARAM knob</td><td>Speed of the loop.</td></tr>
+    <tr><td>CHANCE slider</td><td>Probability, on a given step, that the saved modification is re-applied to the looped gate data. Unlike normal operation, here each modification is length 1, so modification activity is decided every step.</td></tr>
+    <tr><td>LENGTH slider</td><td>Length of the loop. Set to 1 to repeat playback of the current step.</td></tr>
+    <tr><td>CYCLE switch</td><td>Maintains the original sequencer position when exiting the looper.</td></tr>
+    <tr><td>CLOCK output</td><td>Manipulates the position of any connected sequencer so its sequence position mimics the loop position.</td></tr>
+  </table>
+  <p class="note">Each step is one clock pulse, and the looper stores that pulse's trigger activity at sub-clock resolution, so ratchets and multiple hits within a step are preserved. The behavior of the loop gate input can be switched from toggling the loop on/off to momentarily holding it on while the gate is high; this is set in the setup menu (see below).</p>
+
+  <h1>Setup Menu</h1>
+  <p>IDUM has extra options under the hood, reached through the menu. In this mode the active settings are shown on the MODE ring of LEDs and the LOOP LED. Settings are saved when you exit and persist across power cycles. ID00M keeps the stock page 1 and adds a second page for its new options.</p>
+  <h2>Entering the menu</h2>
+  <ul>
+    <li><strong>Hold REMOVE MODE for about 1 second</strong> to enter <strong>page 1</strong>.</li>
+    <li><strong>Keep holding past about 2.5 seconds</strong> (the same continuous hold) to reach <strong>page 2</strong>, the ID00M options; the LEDs blink to signal you have arrived. Release between 1 and 2.5 seconds to stay on page 1.</li>
+    <li>Point the MODE dial at a slot, then <strong>short-press REMOVE MODE</strong> to toggle or cycle that option.</li>
+    <li><strong>Hold REMOVE MODE for about 1 second again to exit.</strong> This saves your settings.</li>
+  </ul>
+  <p class="note">Unplug any modulation from the MODE CV input while in the menu; it moves where the dial appears to point. The option names are also faintly written on the panel.</p>
+
+  <h2>Page 1 options</h2>
+  <p>These are the stock IDUM options, with one ID00M addition on the split slot.</p>
+  <table>
+    <tr><th>Ring slot</th><th>Option</th><th>What it does</th></tr>
+    <tr><td>1</td><td>Slow Clock</td><td>Speed of the clock bursts used to re-synchronize a sequencer on the clock output (via CYCLE). LED off = slow, best for slower or digital sequencers; LED on = fast.</td></tr>
+    <tr><td>2</td><td>Parameter Resolution: POW2</td><td rowspan="3">Restricts the PARAM values used by the ratcheting modes and the SCATTER grid. POW2 = 1/2/4/8; EVEN = 1/2/4/6/8; ODD = any 1-8. The lit LED in this group shows the current choice.</td></tr>
+    <tr><td>3</td><td>Parameter Resolution: EVEN</td></tr>
+    <tr><td>4</td><td>Parameter Resolution: ODD</td></tr>
+    <tr><td>5</td><td>Length Resolution: ODD</td><td rowspan="3">Restricts the values available to the LENGTH slider, the same way. ODD = any 1-8; EVEN = 1/2/4/6/8; POW2 = 1/2/4/8.</td></tr>
+    <tr><td>6</td><td>Length Resolution: EVEN</td></tr>
+    <tr><td>7</td><td>Length Resolution: POW2</td></tr>
+    <tr><td>8</td><td>Split / Split + Freeze <span style="color:var(--ok)">(ID00M)</span></td><td>Short-press to cycle: once = split on, twice = split + PARAM freeze, three times = off. Ring slot 8 solid = split; loop LED blinking = freeze engaged. See <em>New features</em>.</td></tr>
+    <tr><td>LOOP LED</td><td>Loop-gate behavior</td><td>Press the LOOP button while in the menu to toggle. Off = the loop gate toggles the looper on each rising edge; on = the loop gate holds the looper on only while the gate is high.</td></tr>
+  </table>
+
+  <h2>Page 2 options <span style="color:var(--ok);font-size:13px">(all new in ID00M)</span></h2>
+  <p class="note"><strong>Keep the CYCLE switch down for page 2.</strong> Flipping CYCLE up switches to page 3, the per-channel clock editor (below). So if page 2 does not look the way you expect, check that CYCLE is down.</p>
+  <table>
+    <tr><th>Ring slot</th><th>Option</th><th>What it does</th></tr>
+    <tr><td>1</td><td>Linear drumming on / off</td><td>Toggle the one-voice-at-a-time output filter. Steady dot = on.</td></tr>
+    <tr><td>2-5</td><td>Linear-drumming priority</td><td>Press a channel's slot to move it to top priority (others shift down); tap channels from lowest to highest priority to build any ranking. Shown as a chasing dot stepping the ranks. Default TR1 &gt; TR2 &gt; TR3 &gt; TR4.</td></tr>
+    <tr><td>6</td><td>MERGE</td><td>Cycle OFF / ADD / CUT / MIX. LED 6 solid = active; the loop LED blinks the state (1 = ADD, 2 = CUT, 3 = MIX).</td></tr>
+    <tr><td>7</td><td>Break pattern bank</td><td>Cycle the break bank: bank 0 = the original drum patterns, bank 1 = the clave / world / polyrhythm bank. LED 7 solid = the non-default bank.</td></tr>
+    <tr><td>8</td><td>Break speed multiplier</td><td>Cycle 1x / 2x / 3x / 4x. LED 8 solid = above 1x; the loop LED blinks the multiplier.</td></tr>
+  </table>
+
+  <h2>Page 3 per-channel clock editor <span style="color:var(--ok);font-size:13px">(all new in ID00M)</span></h2>
+  <p>From page 2, <strong>flip the CYCLE switch up</strong> to open the per-channel clock editor; flip it back <strong>down</strong> to return to page 2. (CYCLE does nothing menu-wise on page 1.) This is where you set each channel's clock rate for its <strong>bursts and bouncing balls</strong>. In short: page 2 = CYCLE down, page 3 = CYCLE up.</p>
+  <ul>
+    <li>The MODE ring shows a single steady dot at the current channel's rate: slot 1 = &divide;4, 2 = &divide;3, 3 = &divide;2, 4 = &times;1, 5 = &times;2, 6 = &times;3, 7 = &times;4, 8 = &times;8. Default is &times;1 (inert until changed).</li>
+    <li>The <strong>LOOP button</strong> steps the channel cursor 1 &rarr; 2 &rarr; 3 &rarr; 4; the <strong>loop LED blinks the channel number</strong>.</li>
+    <li>The <strong>MODE dial</strong> sets the current channel's rate. It uses pickup: it only takes over once you physically move it after landing on a channel, so switching channels never disturbs a stored value.</li>
+  </ul>
+  <p class="note">MULTIPLY / DIVIDE is deliberately excluded here, since it already ratchets against each channel's own input rhythm rather than the clock.</p>
+
+  <h1>Firmware Update</h1>
+  <p>ID00M is flashed, and reverted, right in your web browser. There is no programmer to buy, no avrdude, and no Arduino IDE to install.</p>
+  <ol>
+    <li><strong>Power the module from USB only.</strong> Take IDUM out of your rack, or switch the rack's power off, first; it should not be powered from the rack and USB at the same time. Unlike Cloct, IDUM does not need rack power to update.</li>
+    <li>Connect the module to your computer with a USB cable. There is no button to hold and no "update mode" to enter; the updater resets the module into programming mode for you.</li>
+    <li>Open the <a href="https://00modular.com/id00m/resources/#firmware">ID00M firmware updater</a> (the FW Updater tab on the ID00M resources page).</li>
+    <li>Choose <strong>ID00M</strong> or <strong>Stock v.99</strong>, then press <strong>Update</strong> and pick the module's serial port from the browser prompt.</li>
+    <li>Wait for the updater to erase, write, and verify. When it finishes, unplug and replug the module (or power-cycle it in the rack) to boot the new firmware.</li>
+  </ol>
+  <p>ID00M lights the <strong>first and last ring LEDs together</strong> (a "00" signature) for about a second at power-on, so you can confirm the flash took. Stock v.99 lights a single third LED instead.</p>
+  <div class="callout id00m">
+    <span class="tag">Reversible</span>
+    <p style="margin:0">The updater can put Eli's stock v.99 back on the module at any time, so trying ID00M is risk-free. Pick <strong>Stock v.99</strong> in the updater to revert.</p>
+  </div>
+  <h2>Requirements</h2>
+  <ul>
+    <li>The updater uses the Web Serial API, which works in <strong>Chromium-family desktop browsers</strong> (Chrome, Edge, Opera, Brave, Vivaldi, Arc). It is not supported in Firefox, Safari, or mobile browsers. The updater checks your browser and tells you if it can't run.</li>
+    <li><strong>Windows:</strong> the module is normally plug-and-play. If it never appears in the port picker, install the Arduino USB serial driver (bundled with the Arduino IDE) or try a different cable or port.</li>
+    <li>The onboard programmer can be flaky. The updater automatically retries the handshake and the write; if it truly cannot continue, it tells you to unplug the USB cable, plug it back in, and press Update again.</li>
+  </ul>
+  <p class="note">All ID00M firmware source, the prebuilt images, and the browser flasher are open (CC BY-SA / MIT) and available in the public ID00M repository, linked from the resources page.</p>
+
+  <div class="footer">
+    ID00M Firmware v1.0.0 - this firmware and manual are subject to change. Please report errors and suggestions.
+  </div>
+
+</div><!-- .page -->
+
+<a href="#manual-toc" class="to-top" aria-label="Back to table of contents" title="Back to contents">
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3 8l5-5 5 5"/></svg>
+</a>
+
+<script>
+(function(){
+  // Back-to-top button appears once past the cover.
+  var btn = document.querySelector('.to-top');
+  if (!btn) return;
+  function update(){ btn.classList.toggle('is-visible', (window.scrollY || window.pageYOffset || 0) > 400); }
+  window.addEventListener('scroll', update, { passive: true }); update();
+})();
+</script>
+<script>
+(function(){
+  // Auto-build the table of contents from the section headings, assigning ids
+  // as needed. Reads live headings, so it stays correct as the manual changes.
+  var page = document.querySelector('.page'), nav = document.getElementById('manual-toc');
+  if (!page || !nav) return;
+  var heads = page.querySelectorAll('h1, h2');
+  if (!heads.length) { nav.style.display = 'none'; return; }
+  function slug(t){ return t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-+|-+$)/g, '') || 'section'; }
+  var seen = {}, ul = document.createElement('ul');
+  Array.prototype.forEach.call(heads, function(h){
+    if (!h.id){ var base = slug(h.textContent), id = base, n = 2; while (seen[id] || document.getElementById(id)) id = base + '-' + (n++); h.id = id; }
+    seen[h.id] = true;
+    var li = document.createElement('li');
+    li.className = (h.tagName === 'H1') ? 'toc-h1' : 'toc-h2';
+    var a = document.createElement('a'); a.href = '#' + h.id; a.textContent = h.textContent;
+    li.appendChild(a); ul.appendChild(li);
+  });
+  var title = document.createElement('div'); title.className = 'toc-title'; title.textContent = 'Contents';
+  nav.appendChild(title); nav.appendChild(ul);
+})();
+</script>
+<script>
+(function(){
+  // Auto-link inline cross-references: an <em> whose text names a section
+  // heading becomes a link to that section. Runs after the TOC assigns ids.
+  var page = document.querySelector('.page'); if (!page) return;
+  function norm(t){ return t.toLowerCase().replace(/\([^)]*\)/g, ' ').replace(/[^a-z0-9]+/g, ' ').trim(); }
+  var map = {};
+  ['h1','h2'].forEach(function(tag){ Array.prototype.forEach.call(page.querySelectorAll(tag), function(h){ if (!h.id) return; var k = norm(h.textContent); if (k && !(k in map)) map[k] = h.id; }); });
+  Array.prototype.forEach.call(page.querySelectorAll('em'), function(em){
+    if (em.closest('a')) return;
+    var id = map[norm(em.textContent)]; if (!id) return;
+    var a = document.createElement('a'); a.className = 'xref'; a.href = '#' + id; a.innerHTML = em.innerHTML;
+    em.parentNode.replaceChild(a, em);
+  });
+})();
+</script>
+<script>
+(function(){
+  // ── Mode-ring diagram ──────────────────────────────────────────────
+  // Renders the MODE ring into each <figure class="mode-ring" data-active="N">.
+  // N = 0-7 shows that mode's own colored-LED ring image (the colored LED is the
+  // highlight). N = -1 shows the all-lit ring plus numbered badges + legend.
+  // Ring art derived from the CC BY-SA IDUM manual, LEDs colored per mode.
+  var NAMES = ['HOLD','BURST','MULTIPLY / DIVIDE','BOUNCING BALL','ROTATE','GATE DELAY','BREAK','SCATTER'];
+  var FILES = ['mode-1-hold','mode-2-burst','mode-3-ratchet','mode-4-bounce','mode-5-rotate','mode-6-delay','mode-7-break','mode-8-scatter'];
+  // Number-badge positions (%) for the all-lit reference ring. The 8 modes sit on
+  // a circle spaced as if 10 (36 deg apart, the MODE pot's travel) with the bottom
+  // two omitted for the pot dead zone.
+  var NUM = [[18.8,72.8],[11.1,52.8],[18.4,32.6],[37.9,20],[62.2,19.8],[82,32.1],[89.7,52.1],[82.4,72.3]];
+  function build(active){
+    if (active >= 0) return '<div class="ring-annot"><img src="' + FILES[active] + '.png" width="1000" height="1148" loading="lazy" alt="MODE ring, ' + NAMES[active] + ' lit"></div>';
+    var h = '<div class="ring-annot"><img src="mode-ring-all.png" width="1000" height="1148" alt="MODE ring, all eight modes lit">';
+    for (var i = 0; i < 8; i++) h += '<span class="rn" style="left:' + NUM[i][0] + '%;top:' + NUM[i][1] + '%">' + (i + 1) + '</span>';
+    return h + '</div>';
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('figure.mode-ring[data-active]'), function(fig){
+    var a = parseInt(fig.getAttribute('data-active'), 10); if (isNaN(a)) a = -1;
+    var html = build(a);
+    if (a < 0) html += '<div class="mode-legend">' + NAMES.map(function(n, i){ return '<span><b>' + (i + 1) + '</b> ' + n + '</span>'; }).join('') + '</div>';
+    fig.insertAdjacentHTML('afterbegin', html);
+  });
+})();
+</script>
+<script>
+(function(){
+  // ── In-manual search ──────────────────────────────────────────────
+  // Self-contained find-in-page: a floating magnifier button opens a search
+  // bar that highlights every match in the body, counts them, and steps
+  // through them with Enter / the up-down buttons or the "/" key. Native
+  // Ctrl+F is unreliable inside the hub's iframe and absent on mobile, so
+  // the manual ships its own. Ported from the Cloct manual.
+  var page = document.querySelector('.page');
+  if (!page) return;
+  var toc = document.getElementById('manual-toc');
+  var css = document.createElement('style');
+  css.textContent = [
+    '.id00m-search-fab{position:fixed;right:calc(env(safe-area-inset-right,0px) + 24px);bottom:calc(env(safe-area-inset-bottom,0px) + 80px);width:44px;height:44px;border-radius:50%;background:var(--orange);color:var(--bg);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.5);transition:transform .15s ease;}',
+    '.id00m-search-fab:hover{transform:translateY(-2px);}',
+    '.id00m-search-fab svg{width:20px;height:20px;display:block;}',
+    '@media (max-width:700px){.id00m-search-fab{right:calc(env(safe-area-inset-right,0px) + 16px);bottom:calc(env(safe-area-inset-bottom,0px) + 116px);}}',
+    '@media print{.id00m-search-fab,.id00m-search-bar{display:none !important;}}',
+    '.id00m-search-bar{position:fixed;top:8px;left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:440px;display:none;align-items:center;gap:8px;padding:8px 10px;background:var(--bg-light);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.5);z-index:300;box-sizing:border-box;}',
+    '.id00m-search-bar.is-open{display:flex;}',
+    '.id00m-search-bar input{flex:1 1 auto;min-width:0;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--white);font-family:var(--body);font-size:15px;padding:7px 9px;outline:none;}',
+    '.id00m-search-bar input:focus{border-color:var(--orange);}',
+    '.id00m-search-bar .count{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap;min-width:54px;text-align:center;}',
+    '.id00m-search-bar button.nav{background:transparent;border:1px solid var(--border);border-radius:5px;color:var(--white);cursor:pointer;width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;padding:0;}',
+    '.id00m-search-bar button.nav:hover:not(:disabled){border-color:var(--orange);color:var(--orange);}',
+    '.id00m-search-bar button.nav:disabled{opacity:.4;cursor:default;}',
+    '.id00m-search-bar button.nav svg{width:14px;height:14px;display:block;}',
+    'mark.id00m-hit{background:rgba(245,146,30,.28);color:inherit;border-radius:2px;scroll-margin-top:64px;}',
+    'mark.id00m-hit.is-current{background:var(--orange);color:var(--bg);}'
+  ].join('');
+  document.head.appendChild(css);
+
+  var fab = document.createElement('button');
+  fab.className = 'id00m-search-fab';
+  fab.type = 'button';
+  fab.setAttribute('aria-label', 'Search the manual');
+  fab.title = 'Search (press /)';
+  fab.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg>';
+
+  var bar = document.createElement('div');
+  bar.className = 'id00m-search-bar';
+  bar.setAttribute('role', 'search');
+  bar.innerHTML =
+    '<input type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Search the manual" placeholder="Search the manual...">' +
+    '<span class="count" aria-live="polite"></span>' +
+    '<button class="nav prev" type="button" aria-label="Previous match" disabled><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 10L8 6l-4 4"/></svg></button>' +
+    '<button class="nav next" type="button" aria-label="Next match" disabled><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></button>' +
+    '<button class="nav close" type="button" aria-label="Close search"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>';
+
+  document.body.appendChild(fab);
+  document.body.appendChild(bar);
+
+  var input = bar.querySelector('input');
+  var countEl = bar.querySelector('.count');
+  var prevBtn = bar.querySelector('.prev');
+  var nextBtn = bar.querySelector('.next');
+  var closeBtn = bar.querySelector('.close');
+
+  var hits = [];
+  var current = -1;
+
+  function clearHighlights(){
+    for (var i = 0; i < hits.length; i++){
+      var m = hits[i], parent = m.parentNode;
+      if (!parent) continue;
+      parent.replaceChild(document.createTextNode(m.textContent), m);
+      parent.normalize();
+    }
+    hits = [];
+    current = -1;
+  }
+
+  function textNodes(){
+    var out = [];
+    var walker = document.createTreeWalker(page, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(node){
+        if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        var p = node.parentNode;
+        while (p && p !== page){
+          var tag = p.nodeName;
+          if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'MARK') return NodeFilter.FILTER_REJECT;
+          if (toc && p === toc) return NodeFilter.FILTER_REJECT;
+          p = p.parentNode;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var n;
+    while ((n = walker.nextNode())) out.push(n);
+    return out;
+  }
+
+  function highlight(query){
+    clearHighlights();
+    if (query.length < 2){ countEl.textContent = ''; updateNav(); return; }
+    var q = query.toLowerCase();
+    var nodes = textNodes();
+    for (var i = 0; i < nodes.length; i++){
+      var node = nodes[i], text = node.nodeValue, lower = text.toLowerCase();
+      var idx = lower.indexOf(q);
+      if (idx < 0) continue;
+      var frag = document.createDocumentFragment(), pos = 0;
+      while (idx >= 0){
+        if (idx > pos) frag.appendChild(document.createTextNode(text.slice(pos, idx)));
+        var mark = document.createElement('mark');
+        mark.className = 'id00m-hit';
+        mark.textContent = text.slice(idx, idx + q.length);
+        frag.appendChild(mark);
+        hits.push(mark);
+        pos = idx + q.length;
+        idx = lower.indexOf(q, pos);
+      }
+      if (pos < text.length) frag.appendChild(document.createTextNode(text.slice(pos)));
+      node.parentNode.replaceChild(frag, node);
+    }
+    if (hits.length) setCurrent(0);
+    else countEl.textContent = 'No matches';
+    updateNav();
+  }
+
+  function updateNav(){
+    var has = hits.length > 0;
+    prevBtn.disabled = !has;
+    nextBtn.disabled = !has;
+  }
+
+  function setCurrent(i){
+    if (!hits.length) return;
+    if (current >= 0 && hits[current]) hits[current].classList.remove('is-current');
+    current = (i + hits.length) % hits.length;
+    var m = hits[current];
+    m.classList.add('is-current');
+    m.scrollIntoView({ block: 'center', inline: 'nearest' });
+    countEl.textContent = (current + 1) + ' / ' + hits.length;
+  }
+
+  function step(delta){ if (hits.length) setCurrent(current + delta); }
+
+  var debounce;
+  function onInput(){
+    clearTimeout(debounce);
+    debounce = setTimeout(function(){ highlight(input.value.trim()); }, 120);
+  }
+
+  function openBar(){ bar.classList.add('is-open'); input.focus(); input.select(); }
+  function closeBar(){
+    bar.classList.remove('is-open');
+    clearHighlights();
+    input.value = '';
+    countEl.textContent = '';
+    updateNav();
+  }
+  function toggleBar(){ bar.classList.contains('is-open') ? closeBar() : openBar(); }
+
+  fab.addEventListener('click', toggleBar);
+  closeBtn.addEventListener('click', closeBar);
+  prevBtn.addEventListener('click', function(){ step(-1); });
+  nextBtn.addEventListener('click', function(){ step(1); });
+  input.addEventListener('input', onInput);
+  input.addEventListener('keydown', function(e){
+    if (e.key === 'Enter'){ e.preventDefault(); step(e.shiftKey ? -1 : 1); }
+    else if (e.key === 'Escape'){ e.preventDefault(); closeBar(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === '/' && !bar.classList.contains('is-open')){
+      var el = document.activeElement, tag = el && el.nodeName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || (el && el.isContentEditable)) return;
+      e.preventDefault();
+      openBar();
+    }
+  });
+})();
+</script>
+</body>
+</html>
