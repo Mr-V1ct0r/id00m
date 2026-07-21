@@ -200,14 +200,21 @@
   <p>An optional one-voice-at-a-time output filter: when two channels would fire at the same instant, only the highest-priority one passes. Priority is editable per channel. Turns dense chaos into a tight, hocketed groove. Set it in <em>Page 2 options</em>.</p>
 
   <h3>MERGE (OFF / ADD / CUT / MIX)</h3>
-  <p>Every stock IDUM mode <em>replaces</em> your incoming triggers with its own output, which is much of why IDUM can feel destructive. MERGE lets a mode instead <strong>ADD</strong> to the input (keep your hits, layer the mode on top) or <strong>CUT</strong> it (keep your hits, but subtract or re-gate them where the mode fires). It is set in <em>Page 2 options</em> at ring slot 6.</p>
+  <p>Every stock IDUM mode <em>replaces</em> your incoming triggers with its own output, which is much of why IDUM can feel destructive. MERGE lets a mode instead <strong>ADD</strong> to the input (keep your hits, layer the mode on top) or <strong>CUT</strong> it (keep your hits, but subtract or re-gate them where the mode fires). It is set in <em>Page 2 options</em> at ring slot 6; LED 6 solid means MERGE is active and the loop LED blinks the state (1 = ADD, 2 = CUT, 3 = MIX).</p>
+  <p>MERGE only touches the four movement / pattern modes - <strong>ROTATE, DELAY, BREAK, SCATTER</strong>. The trigger-anchored modes (HOLD, BURST, MULTIPLY / DIVIDE, BOUNCING BALL) always replace: they are already built around your incoming triggers, so ADD would just double the input and CUT would fight the mode instead of shaping it. MERGE also only acts on a channel while that channel is actively running a modification.</p>
+
+  <p><strong>OFF</strong> - stock behavior. Every mode replaces, exactly as on Eli's IDUM.</p>
+
+  <p><strong>ADD - keep your hits, layer the mode on top.</strong> The mode's output is summed with your raw input, so nothing you play is lost and the mode piles on around it. This is the constructive MERGE, and it works the same way on all four eligible modes: ADD on ROTATE layers the scrambled voice over your original part, ADD on BREAK plays the preset rhythm alongside your hits, and ADD on SCATTER sounds the off-grid copy next to your on-grid hit. The standout is <em>ADD on DELAY</em>, which turns DELAY from a shift into a true dry-plus-delayed echo (your hit <em>and</em> its later copy, rather than just the moved copy).</p>
+
+  <p><strong>CUT - keep your hits, but gate them by the mode.</strong> Where ADD sums, CUT subtracts, and it does so in two different ways depending on the mode. CUT only affects <strong>ROTATE</strong> and <strong>BREAK</strong>; DELAY and SCATTER have no musical "subtract," so they stay on plain replace in this state.</p>
   <ul>
-    <li>It applies to the four movement / pattern modes only - ROTATE, DELAY, BREAK, SCATTER. The trigger-anchored modes (HOLD, BURST, MULTIPLY/DIVIDE, BOUNCING BALL) always replace.</li>
-    <li><strong>OFF</strong> - stock replace everywhere.</li>
-    <li><strong>ADD</strong> - all four eligible modes layer on top of your input. Notably, ADD on DELAY is a true dry-plus-delayed echo.</li>
-    <li><strong>CUT</strong> - affects ROTATE and BREAK only (hocket; pattern-gated holes in the beat). DELAY and SCATTER stay on plain replace.</li>
-    <li><strong>MIX</strong> - DELAY and SCATTER ADD while ROTATE and BREAK CUT, all at once.</li>
+    <li><strong>CUT on ROTATE = hocket / duck.</strong> Your input plays, but drops out at every instant the rotated-in voice fires. The rotated pattern punches holes in your part, so the two interlock (call and response) rather than stacking. Turn PARAM to change which channel is rotated in and the ducking pattern moves with it. <em>Example:</em> two channels playing, ROTATE with MERGE CUT - each channel keeps its own hits except where the other lands on it, and they weave around each other.</li>
+    <li><strong>CUT on BREAK = pattern stencil.</strong> The selected break rhythm becomes a rhythmic mask over your input: your incoming triggers only pass while the pattern is sitting on one of its hit-steps, and are cut on its rests. The pattern's phase free-runs locked to your clock and is <em>not</em> reset by your triggers, so your hits fall across the pattern's full shape and land on rests as well as hits - that is what carves the holes. PARAM picks the rhythm doing the stenciling; the break bank and speed options change its feel. <em>Example:</em> a steady stream of triggers to ch1, BREAK with MERGE CUT - your even stream comes out chopped into the shape of the chosen break pattern.</li>
   </ul>
+
+  <p><strong>MIX - both at once, by mode.</strong> DELAY and SCATTER <strong>ADD</strong> while ROTATE and BREAK <strong>CUT</strong>, so a single setting gives you layered echoes and scatter alongside hocketed rotate and stenciled break. It is the "best of both" state when you are running different modes across channels in split mode.</p>
+
   <p class="note">MERGE currently affects live playing, not loop playback.</p>
   <p class="note">Credit: the MERGE concept and its ADD / CUT naming come from <strong>"Glitch, Please!"</strong> by Patrik Andersson (MorphWorx), a VCV Rack and 4ms MetaModule port of IDUM. ID00M's version is an independent implementation and behaves differently, so treat it as inspired by his work rather than a match to it. If you patch in VCV Rack, go check out MorphWorx.</p>
 
