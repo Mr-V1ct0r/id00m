@@ -328,6 +328,24 @@ bool breakStepGate2 = 0;
 bool breakStepGate3 = 0;
 bool breakStepGate4 = 0;
 
+//CUSTOM (F6 break-CUT decision latch): the pass/drop verdict for CUT-on-BREAK, sampled ONCE from breakStepGate at the input's rising edge and
+//held until the next edge.  applyMerge outputs (trigNIn && cutBreakPassN) so the incoming GATE keeps its full width (IDUM is a gate processor -
+//we must not re-pulse it), while freezing the verdict so a mid-gate flicker of breakStepGate (PARAM/ADC jitter, a wobbly 2x tick) can no longer
+//chop one hit into a flam.  The verdict is decided by where the hit's ONSET lands in the pattern, which is the musically correct moment.
+bool cutBreakPass1 = 0;
+bool cutBreakPass2 = 0;
+bool cutBreakPass3 = 0;
+bool cutBreakPass4 = 0;
+
+//CUSTOM (F6 rotate-CUT decision latch): same idea as the break latch, for MERGE CUT on ROTATE (hocket/duck).  Rotate-CUT is trigNIn AND NOT the
+//rotated-in channel's level; sampled continuously it chops one held input into flams when the rotated voice flickers or only partly overlaps.
+//We latch the duck/pass verdict at trigNIn's rising edge - "was the rotated voice silent when my hit landed?" - and hold it, so the input keeps
+//its full gate width and the verdict cannot flip mid-gate.  Decided at the hit's onset, which is the musical moment a hocket cares about.
+bool cutRotatePass1 = 0;
+bool cutRotatePass2 = 0;
+bool cutRotatePass3 = 0;
+bool cutRotatePass4 = 0;
+
 unsigned int trig1Divide = 0;
 unsigned int trig2Divide = 0;
 unsigned int trig3Divide = 0;
