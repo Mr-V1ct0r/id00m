@@ -43,6 +43,8 @@ void setup() {
 
   displayCustomFirmwareID(1000);  //hold the 00 Modular two-LED signature (first + last ring LEDs together) for ~1s so it's visible at boot before the display timer takes over.
 
+  flashVersion();  //CUSTOM (00 Modular): hold the release-index color dot after the 00 signature (see FW_RELEASE)
+
   dTimer.every(1, displayTimer);  //Start up the display counter, runs every '1' microsecond.
 }
 
@@ -184,6 +186,26 @@ void displayCustomFirmwareID(unsigned long durationMs) {
     displayFirmwareVersion(7);  //last ring LED
     delayMicroseconds(1200);
   }
+}
+
+//////////////////////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+//CUSTOM (00 Modular): on-module version readout.  After the "00" signature, one ring LED is held for ~1s; its POSITION - and therefore its fixed
+//color - is the RELEASE INDEX, a global counter that ticks up by one on every public release (patch, minor OR major - a minor bump is just the
+//next dot).  The dot answers "which release is this"; CHANGELOG.md maps the index to the semver string (1 -> v1.0.1, 2 -> next, ...).  v1.0.0
+//predates this indicator and shows no dot.  Positions 1-8 cover releases 1-8; past 8 we add a loop-LED second digit rather than move the dot.
+//The ring can never go dark (3 address pins -> exactly one of 8 LEDs always lit, no blank), so a short loop-LED tick - the loop LED is an
+//independent GPIO - separates the version dot from the 00 flash.  Blocks ~1.3s; only called from setup(), before the display timer starts.
+#define FW_RELEASE 1   //firmware v1.0.1 - BUMP BY ONE each public release and add the mapping row in CHANGELOG.md
+
+void flashVersion() {
+  digitalWriteFast(loopLED, HIGH);  //separator tick so the version dot reads separately from the 00 signature
+  delay(120);
+  digitalWriteFast(loopLED, LOW);
+  delay(220);
+  unsigned int pos = (FW_RELEASE >= 1 && FW_RELEASE <= 8) ? (FW_RELEASE - 1) : 0;  //release index -> ring position (displayFirmwareVersion(0) = first LED)
+  displayFirmwareVersion(pos);      //hold the release-index dot; its fixed color = the release
+  delay(1000);
 }
 
 //////////////////////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\

@@ -37,8 +37,11 @@ unsigned int mergeOpForMode(unsigned int m) {
 
 //Apply the MERGE combine to each trigger channel.  ADD keeps the input and layers the mode output on top (echo/ghost/merge/layer).  CUT
 //keeps the input but gates it by the mode, with two flavors by intent: ROTATE cuts "minus" (input AND NOT the rotated-in channel = hocket/
-//ducking), while BREAK "sculpts" (input AND the pattern's step-length gate = the incoming beat plays only on the pattern's hit-steps).
-//Break uses breakStepGateN, not its 5ms trigger pulse, so the gate spans the whole step (the pulse version was inaudible).  Only runs on a
+//ducking), while BREAK "sculpts" (input passes only where the pattern has a hit-step = the incoming beat played into the pattern's rhythm).
+//Both CUT flavors latch their pass/drop verdict at the input's RISING EDGE - break from breakStepGateN (cutBreakPassN), rotate from "is the
+//rotated-in voice silent" (cutRotatePassN) - then output (trigNIn && verdict) so the incoming gate keeps its FULL WIDTH (IDUM is a gate
+//processor, we must not re-pulse it) while a mid-gate flicker of the mode output can no longer chop one hit into a flam.  Between hits trigNIn
+//is low so the held verdict is harmless.  op == 2 only ever reaches rotate (mode 4) or break (mode 6) - see mergeOpForMode.  Only runs on a
 //channel actually mid-modification (modifyLengthN > 0).  Scoped to live playing for now (not loop playback) - looper interaction is later.
 void applyMerge() {
   if (mergeState == 0 || loopEnable) return;
@@ -46,22 +49,34 @@ void applyMerge() {
   if (modifyLength1 > 0) {
     unsigned int op = mergeOpForMode(mode1);
     if (op == 1) trig1State = trig1State || trig1In;
-    else if (op == 2) trig1State = (mode1 == 6) ? (trig1In && breakStepGate1) : (trig1In && !trig1State);
+    else if (op == 2) {
+      if (mode1 == 6) { if (trig1Edge) cutBreakPass1 = breakStepGate1; trig1State = trig1In && cutBreakPass1; }
+      else { if (trig1Edge) cutRotatePass1 = !trig1State; trig1State = trig1In && cutRotatePass1; }  //rotate (mode 4)
+    }
   }
   if (modifyLength2 > 0) {
     unsigned int op = mergeOpForMode(mode2);
     if (op == 1) trig2State = trig2State || trig2In;
-    else if (op == 2) trig2State = (mode2 == 6) ? (trig2In && breakStepGate2) : (trig2In && !trig2State);
+    else if (op == 2) {
+      if (mode2 == 6) { if (trig2Edge) cutBreakPass2 = breakStepGate2; trig2State = trig2In && cutBreakPass2; }
+      else { if (trig2Edge) cutRotatePass2 = !trig2State; trig2State = trig2In && cutRotatePass2; }  //rotate (mode 4)
+    }
   }
   if (modifyLength3 > 0) {
     unsigned int op = mergeOpForMode(mode3);
     if (op == 1) trig3State = trig3State || trig3In;
-    else if (op == 2) trig3State = (mode3 == 6) ? (trig3In && breakStepGate3) : (trig3In && !trig3State);
+    else if (op == 2) {
+      if (mode3 == 6) { if (trig3Edge) cutBreakPass3 = breakStepGate3; trig3State = trig3In && cutBreakPass3; }
+      else { if (trig3Edge) cutRotatePass3 = !trig3State; trig3State = trig3In && cutRotatePass3; }  //rotate (mode 4)
+    }
   }
   if (modifyLength4 > 0) {
     unsigned int op = mergeOpForMode(mode4);
     if (op == 1) trig4State = trig4State || trig4In;
-    else if (op == 2) trig4State = (mode4 == 6) ? (trig4In && breakStepGate4) : (trig4In && !trig4State);
+    else if (op == 2) {
+      if (mode4 == 6) { if (trig4Edge) cutBreakPass4 = breakStepGate4; trig4State = trig4In && cutBreakPass4; }
+      else { if (trig4Edge) cutRotatePass4 = !trig4State; trig4State = trig4In && cutRotatePass4; }  //rotate (mode 4)
+    }
   }
 }
 

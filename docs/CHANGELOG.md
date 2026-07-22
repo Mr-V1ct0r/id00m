@@ -10,6 +10,30 @@ options, and a few opinionated changes to how some modes behave.
 > because CC BY-SA asks you to indicate what you changed, and because it's the interesting part.
 
 
+## v1.0.1 - 2026-07-21  *(patch; based on v1.0.0)*
+
+### Bug fixes
+
+- **MERGE CUT no longer flams the incoming beat.** On both CUT flavors - ROTATE (hocket/duck) and
+  BREAK (pattern stencil) - a held input gate could be chopped into several output pulses whenever the
+  mode's own signal flickered mid-gate, so kicks, snares and hats came out flammed and off the beat
+  instead of cleanly gated. CUT now **latches its pass/drop decision at the instant your hit lands** and
+  holds it, so your gate keeps its full width and can no longer be split. The intended masking (the
+  dropped hits) is unchanged - only the flamming is gone. IDUM stays a gate processor: CUT never
+  re-pulses your input to a fixed width.
+
+### New features
+
+- **On-module version readout.** After the **"00"** boot signature, a single ring LED is held for about
+  a second; its **color** tells you which release is on the module - handy once more than one build
+  exists. It's a running release index (the first ring LED = release 1), so a patch, minor or major bump
+  is simply the next color. Power-cycle and read the color, then look it up here:
+  - **Release 1 (first ring LED) = v1.0.1**
+
+*MERGE and its ADD / CUT concept remain credited to **"Glitch, Please!"** by Patrik Andersson
+(MorphWorx); see the v1.0.0 credits below.*
+
+
 ## v1.0.0 - 2026-07-17  *(first public release; based on IDUM v.99)*
 
 ### Bug fixes - faithful (these just restore the behavior IDUM was meant to have)
