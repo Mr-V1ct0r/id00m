@@ -10,6 +10,31 @@ options, and a few opinionated changes to how some modes behave.
 > because CC BY-SA asks you to indicate what you changed, and because it's the interesting part.
 
 
+## v1.0.2 - 2026-07-24  *(patch; based on v1.0.1)*
+
+### Bug fixes: faithful (present in stock v.99; offered back to Eli)
+
+*These restore behavior IDUM was meant to have; the bug is in stock v.99, not something ID00M introduced.*
+
+- **Length-1 modifications now behave.** In Eli's v.99, whether a modification counts as *active* is
+  decided each clock at a moment when its length has briefly ticked to zero, before it is renewed, so at
+  a **LENGTH of 1**, where that happens every clock, the module reads the modification as inactive on each
+  clock edge and skips the effect on the very trigger it should land on. On ID00M you catch it as **GATE
+  DELAY** stuck at a fixed offset no matter where PARAM sits, **MULTIPLY / DIVIDE** counter-clockwise not
+  dividing, or **BURST** counter-clockwise flickering between silence and full passthrough (it could even
+  change on its own after sitting a while), but stock IDUM's own modes were skipped the same way; these
+  are simply where it is easiest to hear. Fixed by settling the active state *after* the modification
+  renews, so a continuous modification stays reliably active every clock. Longer lengths were never affected.
+- **ROTATE now scrambles onto silent channels.** ROTATE re-routes an input to another channel's output,
+  but the destination output was held muted unless *that* channel had its own input, so routing a single
+  input onto otherwise-empty channels came out silent. ROTATE now carries the source channel's gating along
+  with the routed signal, so one input scrambles across all four outputs as intended, with no signal needed
+  on the destination channels. Also present in stock v.99.
+
+*On-module version readout: this build lights the **second** ring LED after the "00" boot signature
+(release 2). Power-cycle and read the dot; see the readout note under v1.0.1 below.*
+
+
 ## v1.0.1 - 2026-07-21  *(patch; based on v1.0.0)*
 
 ### Bug fixes

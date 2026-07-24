@@ -22,6 +22,15 @@ void modifyTest() {
 
     activateModification();  //set a bunch of variables when we do activate a modification
 
+    //B14 fix: recompute modificationActive AFTER activateModification has re-set modifyLength.  decideModificationStatus computes this
+    //same flag (see a60:256) in the window BETWEEN calculateProbability's per-clock decrement (which drops modifyLength to 0 on a boundary
+    //clock) and this reactivation.  At length 1 EVERY clock is a boundary, so the flag was sampled as 0 on every clock edge; handleOutputs
+    //then skips the mode code on the exact clock-aligned input edge, so that output passes through / goes stale and rides a fine timing
+    //race (clock edge vs input gate width vs loop period) that drifts over minutes - a modified output can drop out and later return on its own.
+    //Recomputing here, post-activation, makes a continuous modification (e.g. length 1 at 100% chance) read as active on every clock.
+    if ((modifyLength > 0) || (modifyLength1 > 0) || (modifyLength2 > 0) || (modifyLength3 > 0) || (modifyLength4 > 0)) modificationActive = 1;
+    else modificationActive = 0;
+
   }
 
   else loopModificationHandler();  //we now have a function that more accurately determines modification status when we are in a loop.
