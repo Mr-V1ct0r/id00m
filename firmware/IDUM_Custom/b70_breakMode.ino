@@ -58,6 +58,8 @@ void updateBreakClock() {
 
 //////////////////////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
+//CUSTOM (F6 - cross-ref): the trig*State outputs and breakStepGate* values set below are what MERGE consumes when it is active - ADD ORs the
+//raw input over them, CUT gates the input by breakStepGate* (the clock-locked stencil).  That combine lives in applyMerge() in a90_handleOutputs.
 void breakBeat() {
 
   unsigned long currentMicros = micros();  //calculating the current system time once per function is more efficient

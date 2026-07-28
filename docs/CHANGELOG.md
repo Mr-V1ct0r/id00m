@@ -10,6 +10,40 @@ options, and a few opinionated changes to how some modes behave.
 > because CC BY-SA asks you to indicate what you changed, and because it's the interesting part.
 
 
+## v1.0.3 - 2026-07-28  *(patch; based on v1.0.2)*
+
+### Bug fixes
+
+- **Linear drumming no longer leaks delayed ghost hits.** With a busy beat, a lower-priority channel whose
+  gate *outlived* the higher-priority gate that masked it would re-appear the instant the higher gate fell:
+  its output went high again a few ms late, so a sampler saw a fresh trigger and fired a delayed, shortened
+  phantom hit: snares and hats "still getting through, off the beat" under priority 1>2>3>4. The mask was
+  decided purely per-instant, with no memory that the hit had already lost its moment. Linear drumming now
+  **latches its mute for the whole of a channel's gate**: once a hit is masked at its onset it stays muted
+  until its own gate falls, so it can never resurface mid-gate. The channel's next hit is judged fresh, and
+  the winner/priority logic is unchanged; only the tail leak is closed.
+- **Linear drumming honors priority even when hits aren't perfectly simultaneous.** De-conflicting the live
+  gate per-instant wasn't enough for a one-shot sampler: if a lower-priority hit's edge reached the jack even a
+  hair before the higher-priority one (a kick landing microseconds ahead of a higher-priority snare, say), the
+  sampler had already fired it and priority couldn't reach back, so both voices sounded. Linear drumming now
+  uses a small **look-ahead / coincidence window** (2 ms default): every output is delayed by the window, and a
+  lower-priority hit that loses to a higher one within it is dropped before its delayed onset is ever emitted,
+  so the loser never reaches the sampler. The cost is a **constant ~2 ms latency while linear drumming is on**,
+  applied uniformly to all four voices so they stay phase-locked to each other and the shift is inaudible
+  against the clock. Short triggers keep their full width (just shifted); the window exists only while linear
+  drumming is on.
+- **MERGE CUT on ROTATE no longer flams at modification boundaries.** Under CUT, ROTATE outputs your OWN
+  channel's gate (hocket/duck), but it was still gated by the *rotated source* channel's choke. At a
+  modification boundary the source choke could briefly drop and chop your held gate into a flam. CUT now
+  follows the channel's **own** choke, the gate it actually outputs; REPLACE and ADD, which carry the routed
+  source gate, keep the source choke as before. This completes the v1.0.1 "CUT no longer flams" work for the
+  one path it didn't cover. With the chopped gates gone, the glitchy retriggering they could provoke on a
+  downstream sample player clears up along with them.
+
+*On-module version readout: this build lights the **third** ring LED after the "00" boot signature
+(release 3). Power-cycle and read the dot; see the readout note under v1.0.1 below.*
+
+
 ## v1.0.2 - 2026-07-24  *(patch; based on v1.0.1)*
 
 ### Bug fixes: faithful (present in stock v.99; offered back to Eli)

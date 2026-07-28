@@ -43,6 +43,21 @@ unsigned int mergeOpForMode(unsigned int m) {
 //processor, we must not re-pulse it) while a mid-gate flicker of the mode output can no longer chop one hit into a flam.  Between hits trigNIn
 //is low so the held verdict is harmless.  op == 2 only ever reaches rotate (mode 4) or break (mode 6) - see mergeOpForMode.  Only runs on a
 //channel actually mid-modification (modifyLengthN > 0).  Scoped to live playing for now (not loop playback) - looper interaction is later.
+//CUSTOM (F6 - ADD on break is mostly a no-op on bank 0): op==1 ORs the raw input (trigNIn) onto the mode output, but REPLACE break already
+//fires the pattern's step-0 hit on every trigger (breakIndexN is reset to 0 on the edge, and step 0 is a hit in 62 of 64 bank-0 rows - all
+//kick/snare/hat, all perc except patterns 10/11).  So on bank 0 ADD changes little beyond preserving off-grid timing and the input's true gate
+//width (REPLACE emits fixed ~5ms pulses on the clock-tick grid).  ADD earns its keep where a row RESTS on step 0 - bank 1 (its perc rows start
+//on 0) and bank-0 perc patterns 10/11 - because there REPLACE swallows the hit you play on the anchor and ADD keeps it.  Net: ADD's effect is
+//most noticeable on bank 1.
+//CUSTOM (F6/F14 - break CUT reads the CLOCK-LOCKED phase): cutBreakPassN latches breakStepGateN, which rides breakFreeIndex (the free-running,
+//downbeat-locked phase from updateBreakClock) - NOT the per-channel reset-anchored breakIndexN.  It has to: the verdict latches on trigNEdge,
+//and that edge just reset breakIndexN to 0 (step 0 is a hit in nearly every row), so a reset-anchored gate would always pass and CUT would be a
+//no-op.  Consequence: under CUT a break row is a bar-position STENCIL keyed to the downbeat, not the reset-anchored kit voice it is in
+//ADD/REPLACE.  So bank 0's per-voice paradigm (trigger the snare on beat 3, etc; see the breakBeat1 note in a00) does NOT carry into CUT - a
+//sparse row only opens a pass-window where it has a hit relative to bar 1, so an off-downbeat input hit gets gated out.  Bank 1 (composed to the
+//shared downbeat) is the natural CUT partner.  The break speed multiplier (breakSpeed) sets the stencil grid: higher speed cycles the 16-step
+//pattern faster per bar so its pass-windows recur more often (the lever for catching off-downbeat hits with a sparse bank-0 row); 3x does not
+//divide 16 evenly against the clock, so its stencil drifts (polymetric) instead of locking.
 void applyMerge() {
   if (mergeState == 0 || loopEnable) return;
 
@@ -93,30 +108,65 @@ bool channelIsFiring(unsigned int ch) {
   return false;
 }
 
-//Force a trigger channel's output off for this instant.
-void muteChannel(unsigned int ch) {
+//Set a trigger channel's output state directly (used by linear drumming to hold, drop, or release each channel's delayed gate).
+void setChannelState(unsigned int ch, bool on) {
   switch (ch) {
-    case 1: trig1State = 0; break;
-    case 2: trig2State = 0; break;
-    case 3: trig3State = 0; break;
-    case 4: trig4State = 0; break;
+    case 1: trig1State = on; break;
+    case 2: trig2State = on; break;
+    case 3: trig3State = on; break;
+    case 4: trig4State = on; break;
   }
 }
 
-//LINEAR DRUMMING (custom, toggled in the secondary menu): walk the priority order from top to bottom and keep only the first channel
-//that is actually firing this instant; mute any lower-priority channel that is also firing.  Per-instant, so modes still overlap and
-//interleave - only simultaneous OUTPUT pulses are de-conflicted.  When off, this is a no-op.
+//LINEAR DRUMMING (custom, toggled in the secondary menu): keep only the highest-priority hit when voices collide; drop the lower ones.  When
+//off, this is a no-op (outputs pass straight through, zero added latency).
+//
+//CUSTOM (look-ahead / coincidence window): a drum sampler triggers on the RISING EDGE and plays a one-shot that can't be un-triggered, so
+//de-conflicting the live gate per-instant isn't enough - if a lower-priority hit's edge reaches the jack even a hair before the
+//higher-priority one, the sampler has already fired it and priority can't reach back.  So we DELAY every channel's output by
+//LINEAR_LOOKAHEAD_US and decide suppression in real time as hits arrive: a lower channel that loses to a higher one within that window is
+//dropped BEFORE its delayed onset is ever emitted, so the loser never reaches the sampler.  Two consequences: (1) the whole groove is shifted
+//late by the window - uniform, so the four voices stay phase-locked to each other and it's inaudible against the clock; (2) the suppression
+//verdict is LATCHED for the pulse (set when the channel loses an instant, cleared only at its NEXT onset), which also subsumes the earlier
+//"tail leak" fix - a hit masked at its onset can never resurface mid-gate or in its delayed tail.  The delayed gate is reconstructed from the
+//channel's rise/fall timestamps, so even a trigger SHORTER than the window keeps its full width (just shifted), never lost.  Caveat: this
+//single-pulse reconstruction assumes clean drum gates; running linear drumming ON TOP of a fast sub-window mode (ratchet/burst) can merge
+//those sub-pulses - linear drumming is meant for de-conflicting drum voices, not for stacking on a generator.
 
 void applyLinearDrumming() {
-  if (!linearDrumming) return;
+  //Snapshot each channel's true output-gate level THIS loop (state AND choke) before we override anything below.
+  bool fire[5] = { false, channelIsFiring(1), channelIsFiring(2), channelIsFiring(3), channelIsFiring(4) };
+  unsigned long now = micros();
 
-  bool taken = false;
-  for (unsigned int i = 0; i < 4; i++) {  //priorityOrder[0] is highest priority
-    unsigned int ch = priorityOrder[i];
-    if (channelIsFiring(ch)) {
-      if (taken) muteChannel(ch);  //a higher-priority channel already claimed this instant
-      else taken = true;           //this is the highest-priority firing channel - it wins
-    }
+  //Track each gate's rising/falling edge times every loop - even while the feature is OFF - so enabling mid-stream is always clean.  A fresh
+  //RISING edge is a new hit: reset that channel's suppression verdict so the pulse is judged from scratch.
+  for (unsigned int ch = 1; ch <= 4; ch++) {
+    if (fire[ch] && !linGateHigh[ch]) { linGateRiseT[ch] = now; linSuppressed[ch] = 0; }
+    if (!fire[ch] && linGateHigh[ch]) { linGateFallT[ch] = now; }
+    linGateHigh[ch] = fire[ch];
+  }
+
+  if (!linearDrumming) return;  //OFF: no delay, no de-confliction - the real-time gates pass straight through.
+
+  //Highest-priority channel firing RIGHT NOW (real time).  priorityOrder[0] is top.
+  unsigned int winner = 0;
+  for (unsigned int i = 0; i < 4; i++) {
+    if (fire[priorityOrder[i]]) { winner = priorityOrder[i]; break; }
+  }
+
+  //Latch the loss in real time: any lower-priority channel firing while a higher one is also firing is suppressed for the rest of THIS pulse.
+  //We decide here but emit a window later (below), so a higher hit landing up to LINEAR_LOOKAHEAD_US late still catches the loser before its
+  //delayed onset goes out.  The latch persists through the delayed tail (it clears only at the channel's next onset, tracked above).
+  for (unsigned int ch = 1; ch <= 4; ch++) {
+    if (fire[ch] && ch != winner) linSuppressed[ch] = 1;
+  }
+
+  //Emit each channel's gate DELAYED by the window (reconstructed from its rise/fall times so a short trigger keeps full width), then dropped
+  //if this pulse was suppressed.
+  for (unsigned int ch = 1; ch <= 4; ch++) {
+    bool aged      = (now - linGateRiseT[ch]) >= LINEAR_LOOKAHEAD_US;                       //onset is now at least a window old
+    bool stillOpen = linGateHigh[ch] || ((now - linGateFallT[ch]) < LINEAR_LOOKAHEAD_US);  //gate still high, or fell less than a window ago (delayed tail)
+    setChannelState(ch, aged && stillOpen && !linSuppressed[ch]);
   }
 }
 

@@ -31,13 +31,19 @@ void rotate() {
   //new ones), so the choke's usual job - "wait for THIS channel's own input before letting burst/ratchet embellishments out" - is wrong
   //here: it muted a rotated signal on any destination channel that had no input of its own.  Following the source choke keeps the "wait for
   //the first hit" behaviour keyed to the voice actually being routed, so a single input scrambles onto every output as intended.
-  if ((modifyLength1 > 0) && (mode1 == 4)) { unsigned int s = rotateSrc[0][rotation1]; trig1State = in[s - 1]; trig1Choke = choke[s - 1]; }
+  //CUSTOM (MERGE CUT choke alignment): under CUT (op==2) the output is no longer the routed SOURCE gate - applyMerge (a90) replaces it with this
+  //channel's OWN input (trigNIn && cutRotatePassN, hocket/duck).  So CUT must follow the OWN choke (choke[N-1]), not the source's: pairing the
+  //own gate with a foreign choke let the source choke drop at a modification boundary and CHOP the own gate into a flam.  REPLACE/ADD still
+  //carry the source gate, so they keep the source choke.  The condition mirrors applyMerge's guard exactly: CUT only actually swaps the output
+  //when !loopEnable && mergeOpForMode(modeN)==2, so we swap the choke on the same terms (during loop playback applyMerge bails and the output
+  //stays the source gate, which must keep the source choke).
+  if ((modifyLength1 > 0) && (mode1 == 4)) { unsigned int s = rotateSrc[0][rotation1]; trig1State = in[s - 1]; trig1Choke = (!loopEnable && mergeOpForMode(mode1) == 2) ? choke[0] : choke[s - 1]; }
 
-  if ((modifyLength2 > 0) && (mode2 == 4)) { unsigned int s = rotateSrc[1][rotation2]; trig2State = in[s - 1]; trig2Choke = choke[s - 1]; }
+  if ((modifyLength2 > 0) && (mode2 == 4)) { unsigned int s = rotateSrc[1][rotation2]; trig2State = in[s - 1]; trig2Choke = (!loopEnable && mergeOpForMode(mode2) == 2) ? choke[1] : choke[s - 1]; }
 
-  if ((modifyLength3 > 0) && (mode3 == 4)) { unsigned int s = rotateSrc[2][rotation3]; trig3State = in[s - 1]; trig3Choke = choke[s - 1]; }
+  if ((modifyLength3 > 0) && (mode3 == 4)) { unsigned int s = rotateSrc[2][rotation3]; trig3State = in[s - 1]; trig3Choke = (!loopEnable && mergeOpForMode(mode3) == 2) ? choke[2] : choke[s - 1]; }
 
-  if ((modifyLength4 > 0) && (mode4 == 4)) { unsigned int s = rotateSrc[3][rotation4]; trig4State = in[s - 1]; trig4Choke = choke[s - 1]; }
+  if ((modifyLength4 > 0) && (mode4 == 4)) { unsigned int s = rotateSrc[3][rotation4]; trig4State = in[s - 1]; trig4Choke = (!loopEnable && mergeOpForMode(mode4) == 2) ? choke[3] : choke[s - 1]; }
 }
 
 //////////////////////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\

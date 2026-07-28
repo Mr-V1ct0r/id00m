@@ -196,7 +196,7 @@ void displayCustomFirmwareID(unsigned long durationMs) {
 //predates this indicator and shows no dot.  Positions 1-8 cover releases 1-8; past 8 we add a loop-LED second digit rather than move the dot.
 //The ring can never go dark (3 address pins -> exactly one of 8 LEDs always lit, no blank), so a short loop-LED tick - the loop LED is an
 //independent GPIO - separates the version dot from the 00 flash.  Blocks ~1.3s; only called from setup(), before the display timer starts.
-#define FW_RELEASE 2   //firmware v1.0.2 - BUMP BY ONE each public release and add the mapping row in CHANGELOG.md
+#define FW_RELEASE 3   //firmware v1.0.3 (release 3, 3rd ring LED): linear-drumming tail-leak + CUT-rotate choke-alignment fixes - BUMP BY ONE each public release and add the mapping row in CHANGELOG.md
 
 void flashVersion() {
   digitalWriteFast(loopLED, HIGH);  //separator tick so the version dot reads separately from the 00 signature

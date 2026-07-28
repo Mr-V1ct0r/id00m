@@ -147,6 +147,15 @@ bool splitMode = 0;     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 bool secondaryMenu = 0;                       //true when the deeper "page 2" menu is active
 bool linearDrumming = 0;                      //when on, only the highest-priority active trigger passes each instant
 unsigned int priorityOrder[4] = { 1, 2, 3, 4 };  //rank -> channel: [0] is top priority.  Default TR1 > TR2 > TR3 > TR4.
+//CUSTOM: linear-drumming COINCIDENCE-WINDOW (look-ahead) state.  A one-shot sampler triggers on the rising edge and can't be un-triggered, so
+//to let a higher-priority hit that lands a hair LATER still trump a lower one, every channel's output is delayed by LINEAR_LOOKAHEAD_US and a
+//lower channel that loses to a higher one within that window is dropped BEFORE its (delayed) onset is ever emitted.  Timestamps are micros().
+//See applyLinearDrumming in a90.  Uniform delay keeps all four voices phase-locked to each other (the whole groove shifts by the window).
+#define LINEAR_LOOKAHEAD_US 2000                    //look-ahead / coincidence window, microseconds (2 ms default; tune to your sequencer's inter-voice skew)
+unsigned long linGateRiseT[5] = { 0, 0, 0, 0, 0 };  //index 1-4: micros of each channel's most recent output-gate RISING edge
+unsigned long linGateFallT[5] = { 0, 0, 0, 0, 0 };  //index 1-4: micros of each channel's most recent output-gate FALLING edge
+bool          linGateHigh[5]  = { 0, 0, 0, 0, 0 };  //index 1-4: was the output gate high last loop (edge detection for the timestamps above)
+bool          linSuppressed[5] = { 0, 0, 0, 0, 0 }; //index 1-4: this channel's CURRENT pulse lost to a higher-priority hit; latched until its next onset
 
 //CUSTOM (F6 - MERGE): how the active mode's output combines with the incoming triggers, selected in the secondary menu at ring slot 5.
 //0 = OFF (REPLACE, stock), 1 = ADD (delay/scatter/rotate/break layer onto the input), 2 = CUT (rotate/break subtract from the input),
@@ -421,6 +430,16 @@ unsigned int breakBank = 0;
 //A '1' in each cell activates a single trigger whereas a '0' is silent at that step.  Numbers higher than
 //'1' triggers a ratchet on that step.  Also worth mentioning that these sequences run at twice the resolution
 //of the incoming clock so think of every two steps being one clock.
+//CUSTOM (F13 - two trigger paradigms): the reset-on-trigger rule above means a pattern is always played RELATIVE to your
+//trigger (step 0 = the moment you trigger), so the two banks are authored for two different ways of feeding triggers:
+//  PARADIGM A - per-voice kit (bank 0, breakBeat1): trigger each channel at that voice's natural anchor - kick on the 1,
+//    snare on the 3, hat steady, perc wherever - and each channel embellishes forward from its own reset.  This is Eli's
+//    original drum model: build a basic sparse beat, let the mask fill in around each voice.  (Caveat: this per-voice reset anchor drives
+//    normal break and MERGE ADD; MERGE CUT instead reads the clock-locked downbeat phase, so paradigm A's placement does not carry into CUT
+//    and sparse bank-0 rows gate hard there - see applyMerge in a90.)
+//  PARADIGM B - shared downbeat anchor (bank 1, breakBeat2): phase-lock every voice to one bar-1 pulse (a single
+//    once-per-bar trigger, or the same trigger into all four INs) so the parts interlock into one composed bar.  See the
+//    bank 2 note below for why it is voiced this way and what happens if you play it paradigm-A style.
 //CUSTOM: declared 'const' so the banks live in the ATmega4809's memory-mapped flash (.rodata) instead of RAM.  This frees the ~2 KB
 //of SRAM the stock non-const array wasted AND lets extra banks cost only flash.  The array is read-only at runtime (b70 only reads it).
 
@@ -514,6 +533,12 @@ const int breakBeat1[16][4][16] =
 //patch any single channel to get that voice alone, or several for the full cross-rhythm.  Claves are voiced starting on step 0 (the 3-2
 //orientation) because the reset-on-trigger behaviour makes step 0 the downbeat.  Sources: son/rumba/bossa claves and the bembe 6/8 bell
 //are the standard Afro-Cuban/Brazilian patterns; the 3:2 / 4:3 / 5:4 entries spread N hits evenly across the 16 steps to cross-rhythm.
+//PARADIGM B usage: this bank is composed against a shared bar-1 anchor, so its home voicing wants ONE downbeat trigger driving all four
+//channels (or a common once-per-bar pulse), which lands the clave exactly where it is written.  Feeding it a paradigm-A kit beat instead
+//(clave voice re-triggered on the snare's beat 2, etc.) does NOT break it: because every pattern re-anchors to its trigger and only
+//embellishes 16 steps forward, an "off" trigger placement rotates/truncates the clave into a displaced-but-still-musical variant rather
+//than destroying it.  Treat that as a second, free way to play the bank, not a malfunction.  (General break-mode property: deviating from
+//a pattern's designed alignment transforms it, it does not wreck it.)
 const int breakBeat2[16][4][16] =
 //////X  -  -  -  X  -  -  -  0  -  -  -  X  -  -  - |   <<<< quarter-note grid falls on 0/4/8/12
 { { { 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 }, // Bass       - Son clave 3-2      (P0)
