@@ -390,10 +390,29 @@ void calculateActiveLED() {
 
 void writeToModeMUX() {
 
+  bool readBit = 0;
+
   if (modeCounter != modeCounterOld) {  //only send the write commands when the active LED has changed
     //display values for cd4051 driving mode display
-    switch (modeCounter) {
 
+    if (LEDTweak) {
+
+      //LEDs are now in normal, logical order so we can just read each bit from the mode counter and use those to address our MUX
+      //readBit = !((modeCounter >> 0) & 0x01);
+      readBit = !bitRead (modeCounter, 0) ;
+      digitalWriteFast(mode1LED, readBit);
+
+      //readBit = !((modeCounter >> 1) & 0x01);
+      readBit = !bitRead (modeCounter, 1) ;
+      digitalWriteFast(mode2LED, readBit);
+
+      //readBit = !((modeCounter >> 2) & 0x01);
+      readBit = !bitRead (modeCounter, 2) ;
+      digitalWriteFast(mode3LED, readBit);
+    }
+    
+    else {
+    switch (modeCounter) {
       case 0:
         digitalWriteFast(mode1LED, HIGH);
         digitalWriteFast(mode2LED, LOW);
@@ -435,6 +454,7 @@ void writeToModeMUX() {
         digitalWriteFast(mode3LED, LOW);
         break;
       default: break;
+      }
     }
   }
 

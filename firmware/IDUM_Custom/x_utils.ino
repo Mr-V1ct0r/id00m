@@ -135,7 +135,7 @@ void saveOptions() {
 
   EEPROM.write(3, paramResolution);
   EEPROM.write(4, lengthResolution);
-  EEPROM.write(5, getPriorityByte());  //CUSTOM: save the linear-drumming priority order
+  EEPROM.write(9, getPriorityByte());  //CUSTOM: save the linear-drumming priority order (register 5 now holds the LED-order flag)
   EEPROM.write(6, getBreakByte());     //CUSTOM F13: save the active break pattern bank
   EEPROM.write(7, getF9ByteLow());     //CUSTOM F9: save per-channel clock multipliers (ch1|ch2)
   EEPROM.write(8, getF9ByteHigh());    //CUSTOM F9: save per-channel clock multipliers (ch3|ch4)

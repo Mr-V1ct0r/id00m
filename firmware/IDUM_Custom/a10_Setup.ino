@@ -17,6 +17,9 @@ void setup() {
   if (factoryResetHeld) { delay(20); factoryResetHeld = !digitalReadFast(modeBtn); }  //confirm it is a real, steady hold
   if (factoryResetHeld) writeEEPROMDefaults();
 
+  changeLEDOrder = !digitalReadFast(loopButton);
+  if (changeLEDOrder) { delay(20); changeLEDOrder = !digitalReadFast(loopButton); }  //confirm it is a real, steady hold
+
   displayFirmwareVersion(0);  //CUSTOM (00 Modular): initial boot LED (first ring LED); the two-LED "00" signature (first+last together) is shown during the hold below via displayCustomFirmwareID().
 
   if (printEnable) Serial.begin(9600);  //only setup the serial communication if printing is enabled.  Causes the MCU to work way slower.
@@ -25,9 +28,11 @@ void setup() {
 
   //Confirm a reset with a ring-sweep animation that runs until the button is released.  Waiting for release also consumes the hold so
   //it can't fire a spurious mode toggle when the main loop starts.
-  if (factoryResetHeld) {
+  if (factoryResetHeld || changeLEDOrder) {
     unsigned int sweep = 0;
-    while (!digitalReadFast(modeBtn)) {  //while REMOVE MODE is still held down
+    //Sweep until the button that triggered this is released.  Waiting for release also CONSUMES the hold so it can't fire a
+    //spurious mode toggle (REMOVE MODE) or looper action (LOOP) when the main loop starts.  Whichever button is held keeps it going.
+    while ((factoryResetHeld && !digitalReadFast(modeBtn)) || (changeLEDOrder && !digitalReadFast(loopButton))) {
       displayFirmwareVersion(sweep);      //light the next LED around the ring
       digitalWriteFast(loopLED, HIGH);
       sweep = (sweep + 1) % 8;
@@ -125,6 +130,20 @@ void assignPins() {
 
 void displayFirmwareVersion(unsigned int firmwareNumber) {
 
+  bool readBit = 0;
+
+  if (LEDTweak) {
+    //new hardware (rev 1.3+): the ring LEDs are wired in logical order, so address the MUX straight from the version bits
+    readBit = !bitRead(firmwareNumber, 0);
+    digitalWriteFast(mode1LED, readBit);
+    readBit = !bitRead(firmwareNumber, 1);
+    digitalWriteFast(mode2LED, readBit);
+    readBit = !bitRead(firmwareNumber, 2);
+    digitalWriteFast(mode3LED, readBit);
+    return;
+  }
+
+  //old hardware (batch 1 & 2, serial <= 613): ring LEDs are scrambled, so map each version number to its physical LED by hand
   switch (firmwareNumber) {
 
     case 0:
@@ -196,7 +215,7 @@ void displayCustomFirmwareID(unsigned long durationMs) {
 //predates this indicator and shows no dot.  Positions 1-8 cover releases 1-8; past 8 we add a loop-LED second digit rather than move the dot.
 //The ring can never go dark (3 address pins -> exactly one of 8 LEDs always lit, no blank), so a short loop-LED tick - the loop LED is an
 //independent GPIO - separates the version dot from the 00 flash.  Blocks ~1.3s; only called from setup(), before the display timer starts.
-#define FW_RELEASE 3   //firmware v1.0.3 (release 3, 3rd ring LED): linear-drumming tail-leak + CUT-rotate choke-alignment fixes - BUMP BY ONE each public release and add the mapping row in CHANGELOG.md
+#define FW_RELEASE 4   //firmware v1.0.4 (release 4, 4th ring LED): hardware LED-order support (rev 1.3+ vs batch 1&2) - BUMP BY ONE each public release and add the mapping row in CHANGELOG.md
 
 void flashVersion() {
   digitalWriteFast(loopLED, HIGH);  //separator tick so the version dot reads separately from the 00 signature
@@ -216,27 +235,47 @@ void initializeEEPROM() {
 
   byte modeByte = 0;    //This is used to save all of the active modes into one byte instead of as separate variables.
   byte optionByte = 0;  //This is used to save all of the active options into one byte instead of as separate variables.
+  byte LEDOptionByte = 0;  //LED-order flag (register 5): sets the LED ring order for different hardware versions (see a0000 LEDTweak note).
+
+  //PROVISIONING (see a0000): forceEEPROMReset re-initialises every setting at boot AND stamps the LED-order flag (register 5) from
+  //LEDTweakSetEEPROM.  Both are compile-time constants, so in a shipped build (forceEEPROMReset = 0) this whole branch is dead code
+  //and never runs; it only activates when someone editing the source sets it to 1 to provision a board, then reflashes with it back to 0.
+  if (forceEEPROMReset) {
+    writeEEPROMDefaults();                 //full factory reset of every register...
+    LEDTweak = (LEDTweakSetEEPROM != 0);
+    EEPROM.write(5, LEDTweak ? 1 : 0);     //...plus the one thing a normal reset leaves alone: the LED-order flag
+    return;
+  }
 
   char eepromInitialized = EEPROM.read(0);  //We save a letter into the first memory location on the EEPROM to show that it has been initialiazed.
 
-  if (eepromInitialized == 'Q') {  //Make sure that the right letter is saved (this might change between firmwares).
+  if (eepromInitialized == 'S') {  //Make sure that the right letter is saved (this might change between firmwares).
     optionByte = EEPROM.read(1);
     modeByte = EEPROM.read(2);
     paramResolution = EEPROM.read(3);
     lengthResolution = EEPROM.read(4);
+    LEDOptionByte = EEPROM.read(5);    //LED order: 0 = old order (batch 1&2, serial <= 613), anything else = new order (rev 1.3+)
+    LEDTweak = (LEDOptionByte != 0);
 
     setModeArray(modeByte);            //Take each bit of the mode byte and spit it into separate locations in the mode Array.
     setOptions(optionByte);            //Take each bit of the option byte and split it into separate variables.
-    setPriorityArray(EEPROM.read(5));  //CUSTOM: load the linear-drumming priority order (validates + falls back to default if unset).
+    setPriorityArray(EEPROM.read(9));  //CUSTOM: load the linear-drumming priority order (validates + falls back to default if unset).
     setBreakSettings(EEPROM.read(6));  //CUSTOM F13: load the active break pattern bank (clamps to a valid bank on old/first-run EEPROM).
     setF9Settings(EEPROM.read(7), EEPROM.read(8));  //CUSTOM F9: load per-channel clock multipliers (falls back to all-x1 on old/first-run EEPROM).
 
     if (printEnable) Serial.println("test passed");  //Lets us know that the EEPROM had been saved to before in the appropriate format.
   }
 
-  else {                                                                    //If our test of the EEPROM having the right letter saved fails we write some default values in.
-    writeEEPROMDefaults();                                                  //write the factory defaults for the first time
+  else {                                                                    //Magic byte mismatch: first run, or a firmware format change like this one.
+    writeEEPROMDefaults();                                                  //write the factory defaults
+    LEDTweak = (LEDTweakSetEEPROM != 0);                                    //initialize the LED-order flag from the shipping default: register 5 holds
+    EEPROM.write(5, LEDTweak ? 1 : 0);                                      //  garbage on a pre-v1.0.4 EEPROM, so stamp it once here (per Eli's LEDTweakSetEEPROM spec)
     if (printEnable) Serial.println("Test failed.  EEPROM Reinitialized");  //Lets us know that the EEPROM had to be reset.
+  }
+
+  if (changeLEDOrder) {              //holding LOOP at power-up flips the LED order and persists it to register 5
+    LEDTweak = !LEDTweak;
+    EEPROM.write(5, LEDTweak ? 1 : 0);
   }
 }
 
@@ -246,12 +285,13 @@ void initializeEEPROM() {
 //first-run initialiser above and the power-on factory reset (hold REMOVE MODE while powering up).
 
 void writeEEPROMDefaults() {
-  EEPROM.write(0, 'Q');   //magic byte marking the EEPROM as initialised in this format
+  EEPROM.write(0, 'S');   //magic byte marking the EEPROM as initialised in this format
   EEPROM.write(1, 0);     //option byte: all options off (split off, slow-clock off, loop-input-behaviour off, linear drumming off)
   EEPROM.write(2, 255);   //mode byte: all 8 modes active
   EEPROM.write(3, 0);     //parameter resolution = odd
   EEPROM.write(4, 0);     //length resolution = odd
-  EEPROM.write(5, 228);   //priority byte: default TR1 > TR2 > TR3 > TR4 (packed {1,2,3,4})
+  //register 5 (LED order) is deliberately NOT reset here: it tracks the hardware, not the user's settings, so a factory reset leaves it alone
+  EEPROM.write(9, 228);   //priority byte: default TR1 > TR2 > TR3 > TR4 (packed {1,2,3,4})
   EEPROM.write(6, 0);     //CUSTOM F13: break settings byte -> bank 0 (default drum kit), speed reserved bits clear
   EEPROM.write(7, 0x33);  //CUSTOM F9: per-channel clock multipliers ch1|ch2 = x1|x1 (value 3 in each nibble)
   EEPROM.write(8, 0x33);  //CUSTOM F9: per-channel clock multipliers ch3|ch4 = x1|x1

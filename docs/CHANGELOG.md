@@ -10,6 +10,26 @@ options, and a few opinionated changes to how some modes behave.
 > because CC BY-SA asks you to indicate what you changed, and because it's the interesting part.
 
 
+## v1.0.4 - 2026-08-06  *(patch; based on v1.0.3)*
+
+### New
+
+- **Runs correctly on the newer IDUM hardware (revision 1.3 and up), which wires the LED ring differently.** Eli
+  recently began shipping a newer board revision whose main LED ring is ordered differently from the batch 1 and 2
+  boards (serial 613 and below). Earlier ID00M builds only knew the original order, so on the newer boards the ring
+  lights out of sequence. v1.0.4 carries both orderings and uses the right one, so a single firmware now serves every
+  version of the module. **If the ring looks out of order for your hardware, hold the LOOP button while powering on
+  to switch orders**; the module confirms with a ring sweep, saves the choice, and keeps it across a power cycle. A
+  factory reset leaves it alone, since the order follows the hardware, not your settings. This hardware LED-order
+  support is Eli Pechman's work, folded into ID00M.
+
+*Heads-up for upgraders: v1.0.4 reorganizes a little of what it keeps in the module's memory, so your saved
+settings return to defaults the first time you power up on it. Just set them up again the way you like.*
+
+*On-module version readout: this build lights the **fourth** ring LED after the "00" boot signature
+(release 4). Power-cycle and read the dot; see the readout note under v1.0.1 below.*
+
+
 ## v1.0.3 - 2026-07-28  *(patch; based on v1.0.2)*
 
 ### Bug fixes
